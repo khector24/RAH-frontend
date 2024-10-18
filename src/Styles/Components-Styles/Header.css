@@ -1,0 +1,18 @@
+.header-content {
+    background-color: #000;
+    margin-bottom: 20px;
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.header-content .MuiSvgIcon-root {
+    color: #fff;
+    cursor: pointer;
+    font-size: 35px;
+}
+
+.header-content button {
+    background-color: transparent;
+    border: none;
+}
