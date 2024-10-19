@@ -1,9 +1,6 @@
 .Footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
     background-color: #E73137;
     color: white;
     text-align: center;
+    padding: 10px;
 }

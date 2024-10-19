@@ -9,11 +9,13 @@ const Layout = () => {
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
             <Sidebar />
-            <main style={{ flex: 1, marginLeft: '250px' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <Header />
-                <Outlet />
+                <div style={{ flex: 1, padding: 20 }}>
+                    <Outlet />
+                </div>
                 <Footer />
-            </main>
+            </div>
         </div>
     );
 };
@@ -21,19 +23,3 @@ const Layout = () => {
 export default Layout;
 
 
-// import { Outlet } from 'react-router-dom';
-// import Sidebar from './Components/Sidebar';
-// import Footer from './Components/Footer';
-
-// export default function Layout() {
-//     return (
-//         // <>
-//         //     <Sidebar />
-//         //     <main>
-//         //         <Outlet />
-//         //     </main>
-//         //     <Footer />
-//         // </>
-//         <></>
-//     )
-// }

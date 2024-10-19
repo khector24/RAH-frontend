@@ -4,7 +4,8 @@
     color: white;
     height: 100vh;
     padding: 20px;
-    position: fixed;
+    left: 0;
+    top: 0;
 }
 
 .sidebar h3 {

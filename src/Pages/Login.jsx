@@ -1,6 +1,7 @@
 // Login.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../Styles/Page-Styles/Login.css';
 import axios from 'axios';
 
 export default function Login() {
@@ -31,30 +32,38 @@ export default function Login() {
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
-            {error && <p className="error-message">{error}</p>}
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Login</button>
-            </form>
+        <div className='login-page'>
+            <div className='title-container'>
+                <h1>
+                    <p className='rainbow'>Rainbow Ace</p>
+                    <p className='hardware'>Hardware</p>
+                </h1>
+            </div>
+            <div className="login-container">
+                <h2>Please Login</h2>
+                {error && <p className="error-message">{error}</p>}
+                <form onSubmit={handleLogin}>
+                    <div>
+                        <label>Username:</label>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Password:</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </div>
     );
 };
