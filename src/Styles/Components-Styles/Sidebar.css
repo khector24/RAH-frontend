@@ -1,11 +1,15 @@
 .sidebar {
-    width: 200px;
+    width: 25vw;
     background-color: #E73137;
     color: white;
     height: 100vh;
-    padding: 20px;
     left: 0;
     top: 0;
+    position: fixed;
+}
+
+.sidebar .dashboard {
+    padding: 20px;
 }
 
 .sidebar h3 {
