@@ -8,7 +8,7 @@ export default function Manager({ manager }) {
     const phoneNumber = manager?.phoneNumber?.S || "No phone number available";
 
     return (
-        <div className='Manager'>
+        <div className='manager'>
             <h3>
                 {`${firstName} ${lastName}`}
                 <EditIcon titleAccess="Edit Manager" />

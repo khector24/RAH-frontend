@@ -10,7 +10,7 @@ export default function Driver({ driver }) {
     const phoneNumber = driver?.phoneNumber?.S || "No phone number available";
 
     return (
-        <div className='Driver'>
+        <div className='driver'>
             <h3>
                 {`${firstName} ${lastName}`}
                 <EditIcon titleAccess="Edit Driver" />
