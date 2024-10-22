@@ -59,6 +59,18 @@
     background-color: #d62827;
 }
 
+/* .new-manager button:hover {
+    background-color: #E73137;
+} */
+
+.new-delivery .submit-button {
+    background-color: #45a049;
+}
+
+.new-delivery .submit-button:hover {
+    background-color: #3d8b41;
+}
+
 .error-message {
     color: red;
     text-align: center;

@@ -11,10 +11,10 @@ export default function EditManager() {
     const [error, setError] = useState(null);
 
     // Password validation function
-    const validatePassword = (value) => {
-        const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-        return strongPasswordPattern.test(value) || 'Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character.';
-    };
+    // const validatePassword = (value) => {
+    //     const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    //     return strongPasswordPattern.test(value) || 'Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character.';
+    // };
 
     const validatePhoneNumber = (value) => {
         const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
@@ -48,7 +48,7 @@ export default function EditManager() {
                 setValue('firstName', managerData.firstName.S);
                 setValue('lastName', managerData.lastName.S);
                 setValue('phoneNumber', managerData.phoneNumber.S);
-                setValue('title', managerData.title);
+                // setValue('title', managerData.title);
             } catch (err) {
                 console.error('Error fetching manager:', err);
                 setError(err.response?.data?.message || 'Failed to fetch manager.');
@@ -66,11 +66,11 @@ export default function EditManager() {
                 throw new Error('Token not found');
             }
 
-            const response = await axios.put(`http://localhost:3000/managers/${id}`, {
+            const response = await axios.put(`http://localhost:3000/managers/${id}/edit`, {
                 firstName: data.firstName,
                 lastName: data.lastName,
-                phoneNumber: data.phoneNumber,
-                title: data.title,
+                phoneNumber: data.phoneNumber
+                // title: data.title
             }, {
                 headers: {
                     'Authorization': `${token}`,
@@ -127,7 +127,7 @@ export default function EditManager() {
                     />
                     {errors.phoneNumber && <p className='error-message'>{errors.phoneNumber.message}</p>}
                 </div>
-                <div>
+                {/* <div>
                     <label>Title:</label>
                     <input
                         type="text"
@@ -135,7 +135,7 @@ export default function EditManager() {
                         placeholder="e.g., Assistant Manager"
                     />
                     {errors.title && <p className='error-message'>{errors.title.message}</p>}
-                </div>
+                </div> */}
                 <div className='bottom-buttons'>
                     <button
                         type='button'
