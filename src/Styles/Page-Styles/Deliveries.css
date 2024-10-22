@@ -1,5 +1,16 @@
-.Deliveries {}
-
 .Deliveries h2 {
     margin-bottom: 20px;
+}
+
+.Deliveries {
+    position: relative;
+}
+
+.Deliveries .add-icon {
+    font-size: 75px;
+    position: fixed;
+    bottom: 60px;
+    right: 40px;
+    cursor: pointer;
+    color: #E73137;
 }

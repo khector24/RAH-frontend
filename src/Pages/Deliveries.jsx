@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import Delivery from '../Components/delivery';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import '../Styles/Page-Styles/Deliveries.css';
 
 const Deliveries = () => {
     const [deliveries, setDeliveries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDeliveries = async () => {
@@ -56,6 +60,10 @@ const Deliveries = () => {
             {deliveries.map((delivery) => (
                 <Delivery key={delivery.id.S} delivery={delivery} />
             ))}
+            <AddCircleOutlineIcon
+                className='add-icon'
+                onClick={() => navigate("/deliveries/new")}
+            />
         </div>
     );
 };

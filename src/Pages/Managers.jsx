@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Manager from '../Components/Manager';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import '../Styles/Page-Styles/Managers.css';
 
 export default function Managers() {
-    const [managers, setManagers] = useState();
+    const [managers, setManagers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchManagers = async () => {
             try {
                 const token = localStorage.getItem('token');
-                console.log('Retrieved token:', token);
 
                 if (!token) {
                     throw new Error('Token not found');
@@ -35,6 +36,29 @@ export default function Managers() {
         fetchManagers();
     }, []);
 
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this manager?");
+
+        if (confirmDelete) {
+            try {
+                const token = localStorage.getItem('token');
+                await axios.delete(`http://localhost:3000/managers/${id}`, {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                });
+                setManagers((prevManagers) => prevManagers.filter((manager) => manager.id.S !== id));
+            } catch (err) {
+                console.error('Error deleting manager:', err);
+                setError(err.response?.data?.message || 'Failed to delete manager.');
+            }
+        }
+    };
+
+    const handleEdit = (id) => {
+        navigate(`/managers/${id}/edit`);
+    };
+
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -44,12 +68,20 @@ export default function Managers() {
     }
 
     return (
-        <div>
+        <div className='Managers'>
             <h2>All Managers at Rainbow Ace Hardware</h2>
             {managers.map((manager) => (
-                <Manager key={manager.id.S} manager={manager} />
+                <Manager
+                    key={manager.id.S}
+                    manager={manager}
+                    onDelete={handleDelete}
+                    onEdit={handleEdit}
+                />
             ))}
-            <AddCircleOutlineIcon />
+            <AddCircleOutlineIcon
+                className='add-icon'
+                onClick={() => navigate("/managers/new")}
+            />
         </div>
     );
 }

@@ -1,0 +1,13 @@
+.Managers {
+    position: relative;
+    /* Ensure it doesn't interfere with the fixed icon */
+}
+
+.Managers .add-icon {
+    font-size: 75px;
+    position: fixed;
+    bottom: 60px;
+    right: 40px;
+    cursor: pointer;
+    color: #E73137;
+}
