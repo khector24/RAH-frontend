@@ -1,25 +1,26 @@
-// Components/Delivery.jsx
-
 import React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FlagIcon from '@mui/icons-material/Flag';
 import '../Styles/Components-Styles/Delivery.css';
 
-const Delivery = ({ delivery, drivers, onDelete, onEdit }) => {
+const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForDelivery, onComplete }) => {
     return (
         <div className='delivery'>
             <h3>
                 Customer: {delivery.customerName?.S || 'N/A'}
                 <EditIcon
                     titleAccess="Edit Delivery"
-                    onClick={() => onEdit(delivery.id)}
+                    onClick={() => onEdit(delivery.id.S)}
                 />
                 <DeleteIcon
                     titleAccess="Delete Delivery"
-                    onClick={() => onDelete(delivery.id)}
+                    onClick={() => onDelete(delivery.id.S)}
                 />
-                <FlagIcon titleAccess="Flag Delivery" />
+                <FlagIcon
+                    titleAccess="Mark for Review"
+                    onClick={() => onFlagReview(delivery.id.S)}
+                />
             </h3>
 
             <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
@@ -39,14 +40,15 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit }) => {
             </select>
 
             <div>
-                <button>Out for Delivery</button>
-                <button>Mark as Completed</button>
+                <button onClick={() => onOutForDelivery(delivery.id.S)}>Out for Delivery</button>
+                <button onClick={() => onComplete(delivery.id.S)}>Mark as Completed</button>
             </div>
         </div>
     );
 };
 
 export default Delivery;
+
 
 
 

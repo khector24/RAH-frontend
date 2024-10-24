@@ -1,4 +1,5 @@
-// Deliveries.js
+// Deliveries.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -57,27 +58,113 @@ const Deliveries = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this delivery?");
+        const confirmDelete = window.confirm("Are you sure you want to mark this delivery for deletion?");
         if (confirmDelete) {
             try {
                 const token = localStorage.getItem('token');
-                await axios.delete(`http://localhost:3000/deliveries/${id}`, {
+                await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+                    markedForDeletion: true
+                }, {
                     headers: {
                         'Authorization': `${token}`,
                     },
                 });
-                alert("Item successfully deleted!");
-                setDeliveries((prevDeliveries) => prevDeliveries.filter((delivery) => delivery.id !== id));
+                alert("Delivery marked for deletion!");
+                // Update the deliveries state to reflect the change
+                setDeliveries((prevDeliveries) =>
+                    prevDeliveries.map((delivery) =>
+                        delivery.id.S === id ? { ...delivery, markedForDeletion: true } : delivery
+                    )
+                );
             } catch (err) {
-                console.error('Error deleting delivery:', err);
-                setError(err.response?.data?.message || 'Failed to delete delivery.');
+                console.error('Error marking delivery for deletion:', err);
+                setError(err.response?.data?.message || 'Failed to mark delivery for deletion.');
             }
         }
     };
 
+    const handleFlagReview = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+                markedForReview: true,
+            }, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            alert("Delivery marked for review!");
+            // Update the deliveries state
+            setDeliveries((prevDeliveries) =>
+                prevDeliveries.map((delivery) =>
+                    delivery.id.S === id ? { ...delivery, markedForReview: true } : delivery
+                )
+            );
+        } catch (err) {
+            console.error('Error marking delivery for review:', err);
+            setError(err.response?.data?.message || 'Failed to mark delivery for review.');
+        }
+    };
+
+    const handleOutForDelivery = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+                outForDelivery: true,
+            }, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            alert("Delivery marked as out for delivery!");
+            // Update the deliveries state
+            setDeliveries((prevDeliveries) =>
+                prevDeliveries.map((delivery) =>
+                    delivery.id.S === id ? { ...delivery, outForDelivery: true } : delivery
+                )
+            );
+        } catch (err) {
+            console.error('Error marking delivery as out for delivery:', err);
+            setError(err.response?.data?.message || 'Failed to mark delivery as out for delivery.');
+        }
+    };
+
+    const handleComplete = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+                markedCompleted: true,
+            }, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            alert("Delivery marked as completed!");
+            // Update the deliveries state
+            setDeliveries((prevDeliveries) =>
+                prevDeliveries.map((delivery) =>
+                    delivery.id.S === id ? { ...delivery, markedCompleted: true } : delivery
+                )
+            );
+        } catch (err) {
+            console.error('Error marking delivery as completed:', err);
+            setError(err.response?.data?.message || 'Failed to mark delivery as completed.');
+        }
+    };
+
+
     const handleEdit = (id) => {
         navigate(`/deliveries/${id}/edit`);
     };
+
+    const filteredDeliveries = deliveries.filter(delivery => {
+        return (
+            !delivery.markedForDeletion?.BOOL &&
+            !delivery.markedCompleted?.BOOL &&
+            !delivery.markedForReview?.BOOL &&
+            !delivery.outForDelivery?.BOOL
+        );
+    });
 
     if (loading) {
         return <p>Loading...</p>;
@@ -97,15 +184,22 @@ const Deliveries = () => {
     return (
         <div className='Deliveries'>
             <h2>Deliveries for: {fullDate}</h2>
-            {deliveries.map((delivery) => (
-                <Delivery
-                    key={delivery.id.S}
-                    delivery={delivery}
-                    drivers={drivers}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                />
-            ))}
+            {filteredDeliveries.length > 0 ? (
+                filteredDeliveries.map((delivery) => (
+                    <Delivery
+                        key={delivery.id.S}
+                        delivery={delivery}
+                        drivers={drivers}
+                        onFlagReview={handleFlagReview}
+                        onOutForDelivery={handleOutForDelivery}
+                        onComplete={handleComplete}
+                        onDelete={handleDelete}
+                        onEdit={handleEdit}
+                    />
+                ))
+            ) : (
+                <p>No deliveries available.</p>
+            )}
             <AddCircleOutlineIcon
                 className='add-icon'
                 onClick={() => navigate("/deliveries/new")}
@@ -115,6 +209,3 @@ const Deliveries = () => {
 };
 
 export default Deliveries;
-
-
-
