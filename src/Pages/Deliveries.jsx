@@ -57,6 +57,25 @@ const Deliveries = () => {
         fetchAllData();
     }, []);
 
+    const fetchDeliveries = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token not found');
+            }
+
+            const deliveryResponse = await axios.get('http://localhost:3000/deliveries', {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            setDeliveries(deliveryResponse.data);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch deliveries.');
+        }
+    };
+
+
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to mark this delivery for deletion?");
         if (confirmDelete) {
@@ -70,12 +89,7 @@ const Deliveries = () => {
                     },
                 });
                 alert("Delivery marked for deletion!");
-                // Update the deliveries state to reflect the change
-                setDeliveries((prevDeliveries) =>
-                    prevDeliveries.map((delivery) =>
-                        delivery.id.S === id ? { ...delivery, markedForDeletion: true } : delivery
-                    )
-                );
+                fetchDeliveries();
             } catch (err) {
                 console.error('Error marking delivery for deletion:', err);
                 setError(err.response?.data?.message || 'Failed to mark delivery for deletion.');
@@ -95,11 +109,7 @@ const Deliveries = () => {
             });
             alert("Delivery marked for review!");
             // Update the deliveries state
-            setDeliveries((prevDeliveries) =>
-                prevDeliveries.map((delivery) =>
-                    delivery.id.S === id ? { ...delivery, markedForReview: true } : delivery
-                )
-            );
+            fetchDeliveries();
         } catch (err) {
             console.error('Error marking delivery for review:', err);
             setError(err.response?.data?.message || 'Failed to mark delivery for review.');

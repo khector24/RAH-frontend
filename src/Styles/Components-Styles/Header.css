@@ -3,7 +3,34 @@
     margin-bottom: 20px;
     padding: 15px;
     display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.header-content .left-header-content {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    /* Aligns the h2 to the left */
+}
+
+.header-content .right-header-content {
+    display: flex;
+    align-items: center;
     justify-content: flex-end;
+    /* Aligns the right content to the right */
+    gap: 10px;
+    /* Adds space between input and button */
+}
+
+.header-content h2 {
+    color: #fff;
+    margin: 0;
+    /* Removes default margin for better alignment */
+}
+
+.header-content input {
+    width: 50%;
 }
 
 .header-content .MuiSvgIcon-root {
@@ -15,4 +42,6 @@
 .header-content button {
     background-color: transparent;
     border: none;
+    color: #fff;
+    cursor: pointer;
 }

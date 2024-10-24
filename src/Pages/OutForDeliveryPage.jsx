@@ -1,3 +1,5 @@
+// Pages/OutForDelivery.jsx
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/OutForDelivery.css';
@@ -36,7 +38,7 @@ const OutForDelivery = () => {
         try {
             const token = localStorage.getItem('token');
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
-                { outForDelivery: false },
+                { markedCompleted: true },
                 {
                     headers: {
                         'Authorization': `${token}`,
@@ -53,6 +55,29 @@ const OutForDelivery = () => {
         }
     };
 
+    const handleRestore = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
+                { outForDelivery: false },
+                {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                }
+            );
+
+
+            alert("Item restored successfully!");
+            setOutDeliveries((prevDeliveries) =>
+                prevDeliveries.filter((delivery) => delivery.id.S !== id)
+            );
+        } catch (err) {
+            console.error('Error restoring delivery:', err);
+            setError(err.response?.data?.message || 'Failed to restore delivery.');
+        }
+    };
+
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -63,7 +88,7 @@ const OutForDelivery = () => {
 
     return (
         <div>
-            <h2>Deliveries Out for Delivery</h2>
+            <h2>Out for Delivery</h2>
             {outDeliveries.map((delivery) => (
                 <div className='Delivery' key={delivery.id.S}>
                     <p>Customer: {delivery.customerName?.S}</p>
@@ -74,6 +99,9 @@ const OutForDelivery = () => {
                     <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
                     <button onClick={() => handleComplete(delivery.id.S)}>
                         Mark as Completed
+                    </button>
+                    <button onClick={() => handleRestore(delivery.id.S)}>
+                        Restore
                     </button>
                 </div>
             ))}

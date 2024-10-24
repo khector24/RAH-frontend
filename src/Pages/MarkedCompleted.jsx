@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/MarkedForReview.css';
 
-const MarkedForReview = () => {
-    const [markedDeliveries, setMarkedDeliveries] = useState([]);
+const MarkedCompleted = () => {
+    const [completedDeliveries, setCompletedDeliveries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchMarkedDeliveries = async () => {
+        const fetchCompletedDeliveries = async () => {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.get('http://localhost:3000/deliveries', {
@@ -20,10 +20,10 @@ const MarkedForReview = () => {
                 });
 
                 const deliveriesMarkedForReview = response.data.filter(
-                    (delivery) => delivery.markedForReview?.BOOL
+                    (delivery) => delivery.markedCompleted?.BOOL
                 );
 
-                setMarkedDeliveries(deliveriesMarkedForReview);
+                setCompletedDeliveries(deliveriesMarkedForReview);
             } catch (err) {
                 setError(err.response?.data?.message || 'Failed to fetch marked deliveries.');
             } finally {
@@ -31,7 +31,7 @@ const MarkedForReview = () => {
             }
         };
 
-        fetchMarkedDeliveries();
+        fetchCompletedDeliveries();
     }, []);
 
     const handleFinalDelete = async (id) => {
@@ -47,7 +47,7 @@ const MarkedForReview = () => {
                     },
                 });
                 alert("Item permanently deleted!");
-                setMarkedDeliveries((prevDeliveries) =>
+                setCompletedDeliveries((prevDeliveries) =>
                     prevDeliveries.filter((delivery) => delivery.id.S !== id)
                 );
             } catch (err) {
@@ -61,7 +61,7 @@ const MarkedForReview = () => {
         try {
             const token = localStorage.getItem('token');
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
-                { markedForReview: false },
+                { markedCompleted: false },
                 {
                     headers: {
                         'Authorization': `${token}`,
@@ -69,7 +69,7 @@ const MarkedForReview = () => {
                 }
             );
             alert("Item restored successfully!");
-            setMarkedDeliveries((prevDeliveries) =>
+            setCompletedDeliveries((prevDeliveries) =>
                 prevDeliveries.filter((delivery) => delivery.id.S !== id)
             );
         } catch (err) {
@@ -88,8 +88,8 @@ const MarkedForReview = () => {
 
     return (
         <div>
-            <h2>Deliveries Marked for Review</h2>
-            {markedDeliveries.map((delivery) => (
+            <h2>Completed Deliveries</h2>
+            {completedDeliveries.map((delivery) => (
                 <div className='Delivery' key={delivery.id.S}>
                     <p>Customer: {delivery.customerName?.S}</p>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
@@ -98,9 +98,9 @@ const MarkedForReview = () => {
                     <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
                     <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
                     {/* Include other details as needed */}
-                    <button onClick={() => handleFinalDelete(delivery.id.S)}>
+                    {/* <button onClick={() => handleFinalDelete(delivery.id.S)}>
                         Delete Permanently
-                    </button>
+                    </button> */}
                     <button onClick={() => handleRestore(delivery.id.S)}>
                         Restore
                     </button>
@@ -110,4 +110,4 @@ const MarkedForReview = () => {
     );
 };
 
-export default MarkedForReview;
+export default MarkedCompleted;
