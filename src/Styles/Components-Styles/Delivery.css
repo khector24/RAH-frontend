@@ -1,13 +1,18 @@
 .delivery {
     padding: 15px;
-    border: 2px solid black;
-    /* Fix applied here */
+    border: 1px solid rgb(162, 162, 162);
     border-radius: 10px;
     margin: 20px;
 }
 
+.delivery .delivery-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .delivery h3 {
-    margin-bottom: 10px;
+    margin: 0;
 }
 
 .delivery label {
@@ -19,4 +24,17 @@
 .delivery select {
     font-size: 0.9rem;
     padding: 2px 5px;
+}
+
+.delivery .delivery-history .history-item {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid black;
+    /* Keep or adjust as needed */
+    display: flex;
+}
+
+/* Optionally, add styles for the items inside history-item */
+.delivery .delivery-history .history-item .item {
+    flex: 1;
 }

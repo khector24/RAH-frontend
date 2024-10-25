@@ -15,25 +15,25 @@ const Deliveries = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchDeliveries = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    throw new Error('Token not found');
-                }
-
-                const deliveryResponse = await axios.get('http://localhost:3000/deliveries', {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
-                });
-                setDeliveries(deliveryResponse.data);
-            } catch (err) {
-                setError(err.response?.data?.message || 'Failed to fetch deliveries.');
+    const fetchDeliveries = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token not found');
             }
-        };
 
+            const deliveryResponse = await axios.get('http://localhost:3000/deliveries', {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            setDeliveries(deliveryResponse.data);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch deliveries.');
+        }
+    };
+
+    useEffect(() => {
         const fetchDrivers = async () => {
             try {
                 const token = localStorage.getItem('token');
@@ -112,11 +112,7 @@ const Deliveries = () => {
                 },
             });
             alert("Delivery marked as out for delivery!");
-            setDeliveries((prevDeliveries) =>
-                prevDeliveries.map((delivery) =>
-                    delivery.id.S === id ? { ...delivery, outForDelivery: true } : delivery
-                )
-            );
+            fetchDeliveries();
         } catch (err) {
             console.error('Error marking delivery as out for delivery:', err);
             setError(err.response?.data?.message || 'Failed to mark delivery as out for delivery.');
@@ -134,11 +130,7 @@ const Deliveries = () => {
                 },
             });
             alert("Delivery marked as completed!");
-            setDeliveries((prevDeliveries) =>
-                prevDeliveries.map((delivery) =>
-                    delivery.id.S === id ? { ...delivery, markedCompleted: true } : delivery
-                )
-            );
+            fetchDeliveries();
         } catch (err) {
             console.error('Error marking delivery as completed:', err);
             setError(err.response?.data?.message || 'Failed to mark delivery as completed.');
