@@ -1,0 +1,74 @@
+.edit-manager {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.edit-manager h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.edit-manager form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.edit-manager label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.edit-manager input,
+.edit-manager select,
+.edit-manager textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.edit-manager textarea {
+    resize: vertical;
+}
+
+.edit-manager .bottom-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-manager button {
+    flex: 1;
+    padding: 10px;
+    background-color: #d62827;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.edit-manager button:hover {
+    background-color: #E73137;
+}
+
+.edit-manager .submit-button {
+    background-color: #45a049;
+}
+
+.edit-manager .submit-button:hover {
+    background-color: #3d8b41;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 15px;
+}

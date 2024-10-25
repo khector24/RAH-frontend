@@ -13,6 +13,8 @@ import MarkedForDeletion from './Pages/MarkedForDeletion';
 import OutForDeliveryPage from './Pages/OutForDeliveryPage';
 import MarkedForReview from './Pages/MarkedForReview';
 import MarkedCompleted from './Pages/MarkedCompleted';
+import EditDriver from './Pages/EditDriver';
+import NewDriver from './Pages/NewDriver';
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/managers/new" element={<NewManager />} />
           <Route path="/managers/:id/edit" element={<EditManager />} />
           <Route path="/drivers" element={<Drivers />} />
+          <Route path="/drivers/new" element={<NewDriver />} />
+          <Route path="/drivers/:id/edit" element={<EditDriver />} />
           <Route path="/deliveries/markedForDeletion" element={<MarkedForDeletion />} />
           <Route path="/deliveries/markedForReview" element={<MarkedForReview />} />
           <Route path="/deliveries/outForDelivery" element={<OutForDeliveryPage />} />

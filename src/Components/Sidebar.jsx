@@ -7,14 +7,15 @@ export default function Sidebar() {
             <div className='dashboard'>
                 <h3>Dashboard</h3>
                 <nav>
-                    <NavLink to="/" >Home</NavLink>
-                    <NavLink to="/managers" >Managers</NavLink>
-                    <NavLink to="/drivers">Drivers</NavLink>
-                    <NavLink to="/deliveries" >Deliveries</NavLink>
-                    <NavLink to="/deliveries/outForDelivery" >Out for Delivery</NavLink>
-                    <NavLink to="/deliveries/markedCompleted" >Mark Completed</NavLink>
-                    <NavLink to="/deliveries/markedForReview">Marked for Review</NavLink>
-                    <NavLink to="/deliveries/markedForDeletion">Marked for Deletion</NavLink>
+                    <NavLink to="/" className={({ isActive }) => isActive ? 'active-link' : ''} end>Home</NavLink>
+                    <NavLink to="/managers" className={({ isActive }) => isActive ? 'active-link' : ''} end>Managers</NavLink>
+                    <NavLink to="/drivers" className={({ isActive }) => isActive ? 'active-link' : ''} end>Drivers</NavLink>
+                    <hr />
+                    <NavLink to="/deliveries" className={({ isActive }) => isActive ? 'active-link' : ''} end>Deliveries</NavLink>
+                    <NavLink to="/deliveries/outForDelivery" className={({ isActive }) => isActive ? 'active-link' : ''}>Out for Delivery</NavLink>
+                    <NavLink to="/deliveries/markedCompleted" className={({ isActive }) => isActive ? 'active-link' : ''}>Mark Completed</NavLink>
+                    <NavLink to="/deliveries/markedForReview" className={({ isActive }) => isActive ? 'active-link' : ''}>Marked for Review</NavLink>
+                    <NavLink to="/deliveries/markedForDeletion" className={({ isActive }) => isActive ? 'active-link' : ''}>Marked for Deletion</NavLink>
                 </nav>
             </div>
         </div>

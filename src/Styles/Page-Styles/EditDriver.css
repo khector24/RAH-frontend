@@ -1,4 +1,4 @@
-.edit-delivery {
+.edit-driver {
     max-width: 700px;
     margin: 30px auto;
     padding: 20px;
@@ -7,25 +7,25 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.edit-delivery h2 {
+.edit-driver h2 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-.edit-delivery form {
+.edit-driver form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.edit-delivery label {
+.edit-driver label {
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.edit-delivery input,
-.edit-delivery select,
-.edit-delivery textarea {
+.edit-driver input,
+.edit-driver select,
+.edit-driver textarea {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -34,16 +34,16 @@
     box-sizing: border-box;
 }
 
-.edit-delivery textarea {
+.edit-driver textarea {
     resize: vertical;
 }
 
-.edit-delivery .bottom-buttons {
+.edit-driver .bottom-buttons {
     display: flex;
     gap: 10px;
 }
 
-.edit-delivery button {
+.edit-driver button {
     flex: 1;
     padding: 10px;
     background-color: #d62827;
@@ -55,15 +55,15 @@
     transition: background-color 0.3s;
 }
 
-.edit-delivery button:hover {
+.edit-driver button:hover {
     background-color: #E73137;
 }
 
-.edit-delivery .submit-button {
+.edit-driver .submit-button {
     background-color: #45a049;
 }
 
-.edit-delivery .submit-button:hover {
+.edit-driver .submit-button:hover {
     background-color: #3d8b41;
 }
 

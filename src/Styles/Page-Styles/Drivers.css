@@ -1,4 +1,15 @@
-.Drivers {}
+.Drivers {
+    position: relative;
+}
+
+.Drivers .add-icon {
+    font-size: 75px;
+    position: fixed;
+    bottom: 60px;
+    right: 40px;
+    cursor: pointer;
+    color: #E73137;
+}
 
 .Drivers h2 {
     margin-bottom: 20px;
