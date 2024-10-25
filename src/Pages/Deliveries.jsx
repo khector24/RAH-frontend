@@ -12,6 +12,7 @@ const Deliveries = () => {
     const [drivers, setDrivers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const Deliveries = () => {
             }
         };
 
-        const fetchDrivers = async () => { // New function to fetch drivers
+        const fetchDrivers = async () => {
             try {
                 const token = localStorage.getItem('token');
                 const driverResponse = await axios.get('http://localhost:3000/drivers', {
@@ -41,7 +42,7 @@ const Deliveries = () => {
                         'Authorization': `${token}`,
                     },
                 });
-                setDrivers(driverResponse.data); // Update drivers state
+                setDrivers(driverResponse.data);
             } catch (err) {
                 console.error('Error fetching drivers:', err);
                 setError(err.response?.data?.message || 'Failed to fetch drivers.');
@@ -50,31 +51,16 @@ const Deliveries = () => {
 
         const fetchAllData = async () => {
             setLoading(true);
-            await Promise.all([fetchDeliveries(), fetchDrivers()]); // Fetch deliveries and drivers concurrently
+            await Promise.all([fetchDeliveries(), fetchDrivers()]);
             setLoading(false);
         };
 
         fetchAllData();
-    }, []);
+    }, [selectedDate]);
 
-    const fetchDeliveries = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token not found');
-            }
-
-            const deliveryResponse = await axios.get('http://localhost:3000/deliveries', {
-                headers: {
-                    'Authorization': `${token}`,
-                },
-            });
-            setDeliveries(deliveryResponse.data);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch deliveries.');
-        }
+    const handleDateChange = (event) => {
+        setSelectedDate(new Date(event.target.value));
     };
-
 
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to mark this delivery for deletion?");
@@ -108,7 +94,6 @@ const Deliveries = () => {
                 },
             });
             alert("Delivery marked for review!");
-            // Update the deliveries state
             fetchDeliveries();
         } catch (err) {
             console.error('Error marking delivery for review:', err);
@@ -127,7 +112,6 @@ const Deliveries = () => {
                 },
             });
             alert("Delivery marked as out for delivery!");
-            // Update the deliveries state
             setDeliveries((prevDeliveries) =>
                 prevDeliveries.map((delivery) =>
                     delivery.id.S === id ? { ...delivery, outForDelivery: true } : delivery
@@ -150,7 +134,6 @@ const Deliveries = () => {
                 },
             });
             alert("Delivery marked as completed!");
-            // Update the deliveries state
             setDeliveries((prevDeliveries) =>
                 prevDeliveries.map((delivery) =>
                     delivery.id.S === id ? { ...delivery, markedCompleted: true } : delivery
@@ -162,13 +145,15 @@ const Deliveries = () => {
         }
     };
 
-
     const handleEdit = (id) => {
         navigate(`/deliveries/${id}/edit`);
     };
 
-    const filteredDeliveries = deliveries.filter(delivery => {
+    const filteredDeliveries = deliveries.filter((delivery) => {
+        const deliveryDate = delivery.deliveryDate.S; // Get the deliveryDate from the delivery object
+        const selectedDateString = selectedDate.toISOString().split('T')[0];
         return (
+            deliveryDate === selectedDateString &&
             !delivery.markedForDeletion?.BOOL &&
             !delivery.markedCompleted?.BOOL &&
             !delivery.markedForReview?.BOOL &&
@@ -184,16 +169,20 @@ const Deliveries = () => {
         return <p>{error}</p>;
     }
 
-    const date = new Date();
-    const fullDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-
     return (
         <div className='Deliveries'>
-            <h2>Deliveries for: {fullDate}</h2>
+            <div className="date-picker">
+                <div className="date-picker-title">
+                    <h2>Deliveries for: </h2>
+                </div>
+                <div className="date-picker-input">
+                    <input
+                        type="date"
+                        value={selectedDate.toISOString().split('T')[0]}
+                        onChange={handleDateChange}
+                    />
+                </div>
+            </div>
             {filteredDeliveries.length > 0 ? (
                 filteredDeliveries.map((delivery) => (
                     <Delivery
@@ -208,7 +197,7 @@ const Deliveries = () => {
                     />
                 ))
             ) : (
-                <p>No deliveries available.</p>
+                <p>No deliveries available for this date.</p>
             )}
             <AddCircleOutlineIcon
                 className='add-icon'

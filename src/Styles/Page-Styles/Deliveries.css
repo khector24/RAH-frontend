@@ -14,3 +14,20 @@
     cursor: pointer;
     color: #E73137;
 }
+
+.Deliveries .date-picker {
+    display: flex;
+    align-items: center;
+}
+
+.Deliveries .date-picker-title {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.Deliveries .date-picker-input {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
