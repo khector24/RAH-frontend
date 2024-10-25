@@ -25,7 +25,7 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
 
             <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
             <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>
-            <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
+            <p>Delivery Date: {delivery.deliveryDate?.S || 'N/A'}</p>
             <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
             <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
 
