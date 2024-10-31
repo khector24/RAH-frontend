@@ -33,6 +33,24 @@ const Deliveries = () => {
         }
     };
 
+    const fetchDeliveryHistory = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token not found');
+            }
+
+            const deliveryHistoryResponse = await axios.get(`http://localhost:3000/deliveries/${id}/history`, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            setDeliveries(deliveryHistoryResponse.data);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+        }
+    };
+
     useEffect(() => {
         const fetchDrivers = async () => {
             try {
@@ -51,7 +69,7 @@ const Deliveries = () => {
 
         const fetchAllData = async () => {
             setLoading(true);
-            await Promise.all([fetchDeliveries(), fetchDrivers()]);
+            await Promise.all([fetchDeliveries(), fetchDeliveryHistory, fetchDrivers()]);
             setLoading(false);
         };
 
@@ -60,6 +78,23 @@ const Deliveries = () => {
 
     const handleDateChange = (event) => {
         setSelectedDate(new Date(event.target.value));
+    };
+
+    const logDeliveryAction = async (id, action) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post(`http://localhost:3000/deliveryHistory`, {
+                deliveryId: id,
+                action,
+                timestamp: new Date().toISOString()
+            }, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+        } catch (err) {
+            console.error('Error logging delivery action:', err);
+        }
     };
 
     const handleDelete = async (id) => {
@@ -74,6 +109,7 @@ const Deliveries = () => {
                         'Authorization': `${token}`,
                     },
                 });
+                await logDeliveryAction(id, 'marked for deletion'); // Log the deletion
                 alert("Delivery marked for deletion!");
                 fetchDeliveries();
             } catch (err) {
@@ -93,6 +129,7 @@ const Deliveries = () => {
                     'Authorization': `${token}`,
                 },
             });
+            await logDeliveryAction(id, 'flagged for review'); // Log the review flagging
             alert("Delivery marked for review!");
             fetchDeliveries();
         } catch (err) {
@@ -111,6 +148,7 @@ const Deliveries = () => {
                     'Authorization': `${token}`,
                 },
             });
+            await logDeliveryAction(id, 'out for delivery'); // Log the out for delivery action
             alert("Delivery marked as out for delivery!");
             fetchDeliveries();
         } catch (err) {
@@ -129,6 +167,7 @@ const Deliveries = () => {
                     'Authorization': `${token}`,
                 },
             });
+            await logDeliveryAction(id, 'marked completed'); // Log the completion action
             alert("Delivery marked as completed!");
             fetchDeliveries();
         } catch (err) {
@@ -136,6 +175,7 @@ const Deliveries = () => {
             setError(err.response?.data?.message || 'Failed to mark delivery as completed.');
         }
     };
+
 
     const handleEdit = (id) => {
         navigate(`/deliveries/${id}/edit`);

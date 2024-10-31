@@ -9,6 +9,48 @@ const MarkedForReview = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // State to manage visibility of delivery history
+    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+
+    // Function to format the timestamp to standard time
+    const formatTimestamp = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    };
+
+    // Function to get background color based on action
+    const getActionColor = (action) => {
+        switch (action) {
+            case 'created':
+                return '#d4edda'; // Light Green
+            case 'out for delivery':
+                return '#cce5ff'; // Light Blue
+            case 'marked for review':
+                return '#fff3cd'; // Light Yellow
+            case 'marked completed':
+                return '#e2e3e5'; // Light Grey
+            case 'marked for deletion':
+                return '#f8d7da'; // Light Red
+            case 'restored':
+                return '#ffeeba'; // Light Orange
+            default:
+                return 'transparent'; // Default background color
+        }
+    };
+
+    // Toggle delivery history visibility
+    const toggleHistoryVisibility = () => {
+        setIsHistoryVisible((prev) => !prev);
+    };
+
     useEffect(() => {
         const fetchMarkedDeliveries = async () => {
             try {
@@ -97,7 +139,39 @@ const MarkedForReview = () => {
                     <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
                     <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
                     <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
-                    {/* Include other details as needed */}
+
+                    <div>
+                        {/* <h4>Delivery History:</h4> */}
+                        <button onClick={toggleHistoryVisibility}>
+                            {isHistoryVisible ? 'Hide Delivery History' : 'Show Delivery History'}
+                        </button>
+
+                        {isHistoryVisible && delivery.deliveryHistory?.L && (
+                            <div className='delivery-history'>
+                                {delivery.deliveryHistory.L.map((historyItem, index) => {
+                                    const action = historyItem.M.action.S;
+                                    const manager = historyItem.M.manager.S;
+                                    const timestamp = historyItem.M.timestamp.S;
+                                    const actionColor = getActionColor(action.toLowerCase());
+
+                                    return (
+                                        <div className='history-item' key={index} style={{ backgroundColor: actionColor }}>
+                                            <div className='item'>
+                                                Action: {action}
+                                            </div>
+                                            <div className='item'>
+                                                Manager: {manager}
+                                            </div>
+                                            <div className='item'>
+                                                Time: {formatTimestamp(timestamp)}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+
                     <button onClick={() => handleFinalDelete(delivery.id.S)}>
                         Delete Permanently
                     </button>

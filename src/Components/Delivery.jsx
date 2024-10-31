@@ -3,12 +3,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FlagIcon from '@mui/icons-material/Flag';
 import '../Styles/Components-Styles/Delivery.css';
+import axios from 'axios';
 
 const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForDelivery, onComplete }) => {
-    // State to manage visibility of delivery history
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    const [deliveryHistory, setDeliveryHistory] = useState([]); // Local state for delivery history
+    const [error, setError] = useState(null); // State for error handling
 
-    // Function to format the timestamp to standard time
     const formatTimestamp = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleString('en-US', {
@@ -18,21 +19,20 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-            hour12: true
+            hour12: true,
         });
     };
 
-    // Function to get background color based on action
     const getActionColor = (action) => {
         switch (action) {
             case 'created':
-                return '#d4edda'; // Light Green
+                return '#e2e3e5'; // Light Green
             case 'out for delivery':
                 return '#cce5ff'; // Light Blue
-            case 'marked for review':
+            case 'flagged for review':
                 return '#fff3cd'; // Light Yellow
             case 'marked completed':
-                return '#e2e3e5'; // Light Grey
+                return '#d4edda'; // Light Grey
             case 'marked for deletion':
                 return '#f8d7da'; // Light Red
             case 'restored':
@@ -42,9 +42,22 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
         }
     };
 
-    // Toggle delivery history visibility
-    const toggleHistoryVisibility = () => {
+    const toggleHistoryVisibility = async () => {
         setIsHistoryVisible((prev) => !prev);
+
+        if (!isHistoryVisible) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:3000/deliveries/${delivery.id.S}/history`, {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                });
+                setDeliveryHistory(response.data);
+            } catch (err) {
+                setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+            }
+        }
     };
 
     return (
@@ -74,17 +87,16 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
             <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
 
             <div>
-                {/* <h4>Delivery History:</h4> */}
                 <button onClick={toggleHistoryVisibility}>
                     {isHistoryVisible ? 'Hide Delivery History' : 'Show Delivery History'}
                 </button>
 
-                {isHistoryVisible && delivery.deliveryHistory?.L && (
+                {isHistoryVisible && deliveryHistory.length > 0 && (
                     <div className='delivery-history'>
-                        {delivery.deliveryHistory.L.map((historyItem, index) => {
-                            const action = historyItem.M.action.S;
-                            const manager = historyItem.M.manager.S;
-                            const timestamp = historyItem.M.timestamp.S;
+                        {deliveryHistory.map((historyItem, index) => {
+                            const action = historyItem.action.S;
+                            const manager = historyItem.manager.S;
+                            const timestamp = historyItem.timestamp.S;
                             const actionColor = getActionColor(action.toLowerCase());
 
                             return (
@@ -103,27 +115,15 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
                         })}
                     </div>
                 )}
-            </div>
-
-            <label htmlFor="driver-select">Assign Driver:</label>
-            <select name="drivers" id="driver-select">
-                <option value="">--Please choose an option--</option>
-                {drivers.map((driver) => (
-                    <option key={driver.id.S} value={driver.id.S}>
-                        {driver.firstName.S} {driver.lastName.S}
-                    </option>
-                ))}
-            </select>
-
-            <div>
-                <button onClick={() => onOutForDelivery(delivery.id.S)}>Out for Delivery</button>
-                <button onClick={() => onComplete(delivery.id.S)}>Mark as Completed</button>
+                {isHistoryVisible && deliveryHistory.length === 0 && <p>No history available.</p>}
+                {error && <p className='error'>{error}</p>} {/* Display error if any */}
             </div>
         </div>
     );
 };
 
 export default Delivery;
+
 
 
 
