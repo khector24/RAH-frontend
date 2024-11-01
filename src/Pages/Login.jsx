@@ -20,7 +20,8 @@ export default function Login() {
             });
 
             const token = response.data.token;
-            localStorage.setItem('token', token); // Store the token
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', username); // Store the token
             console.log('Logged in successfully! Token:', token);
             // Redirect or perform additional actions upon successful login
             // Redirect to the home page after successful login
