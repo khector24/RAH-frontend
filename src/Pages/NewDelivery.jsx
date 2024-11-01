@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { logDeliveryAction } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/NewDelivery.css';
 
 export default function NewDelivery() {
@@ -52,6 +53,7 @@ export default function NewDelivery() {
 
         if (confirmDeliveryCreation) {
             try {
+
                 const token = localStorage.getItem('token');
                 if (!token) {
                     throw new Error('Token not found');
@@ -71,6 +73,17 @@ export default function NewDelivery() {
                     }
                 );
 
+                console.log('Server response:', response.data);
+
+                // Capture deliveryId from response data
+                const deliveryId = response.data.deliveryId; // Adjust based on your API response
+                const manager = response.data.managerId;
+
+                if (deliveryId) {
+                    await logDeliveryAction(deliveryId, 'created', manager);
+                } else {
+                    throw new Error('Delivery ID not returned from server');
+                }
                 console.log('Delivery created successfully:', response.data);
                 navigate('/deliveries');
             } catch (err) {
@@ -166,14 +179,6 @@ export default function NewDelivery() {
                     ></textarea>
                     {errors.deliveryNotes && <p className='error-message'>{errors.deliveryNotes.message}</p>}
                 </div>
-                {/* <div>
-                    <label>Manager ID:</label>
-                    <input
-                        type="text"
-                        value={managerId}
-                        disabled
-                    />
-                </div> */}
                 <div className='bottom-buttons'>
                     <button className='submit-button' type='submit'>
                         Create Delivery

@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+
+// import { logDeliveryAction } from '../utils/utilFunctions';
+
 import '../Styles/Page-Styles/MarkedForReview.css';
 
 const MarkedForReview = () => {
@@ -76,6 +79,23 @@ const MarkedForReview = () => {
         fetchMarkedDeliveries();
     }, []);
 
+    const logDeliveryAction = async (id, action) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post(`http://localhost:3000/deliveryHistory`, {
+                deliveryId: id,
+                action,
+                timestamp: new Date().toISOString()
+            }, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+        } catch (err) {
+            console.error('Error logging delivery action:', err);
+        }
+    };
+
     const handleFinalDelete = async (id) => {
         const confirmFinalDelete = window.confirm(
             "You are on the final delete page, if you press yes, the delivery will be deleted forever. Are you sure you want to proceed?"
@@ -88,6 +108,8 @@ const MarkedForReview = () => {
                         'Authorization': `${token}`,
                     },
                 });
+
+                await logDeliveryAction(id, "final deletion");
                 alert("Item permanently deleted!");
                 setMarkedDeliveries((prevDeliveries) =>
                     prevDeliveries.filter((delivery) => delivery.id.S !== id)
@@ -110,6 +132,8 @@ const MarkedForReview = () => {
                     },
                 }
             );
+            await logDeliveryAction(id, "restored");
+
             alert("Item restored successfully!");
             setMarkedDeliveries((prevDeliveries) =>
                 prevDeliveries.filter((delivery) => delivery.id.S !== id)

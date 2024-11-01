@@ -1,10 +1,10 @@
-// Pages/Deliveries.jsx
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Delivery from '../Components/delivery';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { format, startOfToday } from 'date-fns';
+import { logDeliveryAction } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/Deliveries.css';
 
 const Deliveries = () => {
@@ -12,7 +12,7 @@ const Deliveries = () => {
     const [drivers, setDrivers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(startOfToday());
     const navigate = useNavigate();
 
     const fetchDeliveries = async () => {
@@ -69,7 +69,7 @@ const Deliveries = () => {
 
         const fetchAllData = async () => {
             setLoading(true);
-            await Promise.all([fetchDeliveries(), fetchDeliveryHistory, fetchDrivers()]);
+            await Promise.all([fetchDeliveries(), fetchDrivers()]);
             setLoading(false);
         };
 
@@ -80,28 +80,13 @@ const Deliveries = () => {
         setSelectedDate(new Date(event.target.value));
     };
 
-    const logDeliveryAction = async (id, action) => {
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post(`http://localhost:3000/deliveryHistory`, {
-                deliveryId: id,
-                action,
-                timestamp: new Date().toISOString()
-            }, {
-                headers: {
-                    'Authorization': `${token}`,
-                },
-            });
-        } catch (err) {
-            console.error('Error logging delivery action:', err);
-        }
-    };
-
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to mark this delivery for deletion?");
         if (confirmDelete) {
             try {
                 const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username'); // Get username directly here
+
                 await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                     markedForDeletion: true
                 }, {
@@ -109,7 +94,13 @@ const Deliveries = () => {
                         'Authorization': `${token}`,
                     },
                 });
-                await logDeliveryAction(id, 'marked for deletion'); // Log the deletion
+
+                if (username) { // Use username directly
+                    await logDeliveryAction(id, 'marked for deletion', username);
+                } else {
+                    console.error('Username not found. Cannot log action.');
+                }
+
                 alert("Delivery marked for deletion!");
                 fetchDeliveries();
             } catch (err) {
@@ -122,6 +113,8 @@ const Deliveries = () => {
     const handleFlagReview = async (id) => {
         try {
             const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username'); // Get username directly here
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 markedForReview: true,
             }, {
@@ -129,7 +122,13 @@ const Deliveries = () => {
                     'Authorization': `${token}`,
                 },
             });
-            await logDeliveryAction(id, 'flagged for review'); // Log the review flagging
+
+            if (username) { // Use username directly
+                await logDeliveryAction(id, 'marked for review', username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
+
             alert("Delivery marked for review!");
             fetchDeliveries();
         } catch (err) {
@@ -141,6 +140,8 @@ const Deliveries = () => {
     const handleOutForDelivery = async (id) => {
         try {
             const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username'); // Get username directly here
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 outForDelivery: true,
             }, {
@@ -148,7 +149,13 @@ const Deliveries = () => {
                     'Authorization': `${token}`,
                 },
             });
-            await logDeliveryAction(id, 'out for delivery'); // Log the out for delivery action
+
+            if (username) { // Use username directly
+                await logDeliveryAction(id, 'out for delivery', username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
+
             alert("Delivery marked as out for delivery!");
             fetchDeliveries();
         } catch (err) {
@@ -160,6 +167,8 @@ const Deliveries = () => {
     const handleComplete = async (id) => {
         try {
             const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username'); // Get username directly here
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 markedCompleted: true,
             }, {
@@ -167,7 +176,13 @@ const Deliveries = () => {
                     'Authorization': `${token}`,
                 },
             });
-            await logDeliveryAction(id, 'marked completed'); // Log the completion action
+
+            if (username) { // Use username directly
+                await logDeliveryAction(id, 'marked completed', username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
+
             alert("Delivery marked as completed!");
             fetchDeliveries();
         } catch (err) {
@@ -176,14 +191,13 @@ const Deliveries = () => {
         }
     };
 
-
     const handleEdit = (id) => {
         navigate(`/deliveries/${id}/edit`);
     };
 
     const filteredDeliveries = deliveries.filter((delivery) => {
-        const deliveryDate = delivery.deliveryDate.S; // Get the deliveryDate from the delivery object
-        const selectedDateString = selectedDate.toISOString().split('T')[0];
+        const deliveryDate = delivery.deliveryDate.S;
+        const selectedDateString = format(selectedDate, 'yyyy-MM-dd');
         return (
             deliveryDate === selectedDateString &&
             !delivery.markedForDeletion?.BOOL &&
@@ -210,7 +224,7 @@ const Deliveries = () => {
                 <div className="date-picker-input">
                     <input
                         type="date"
-                        value={selectedDate.toISOString().split('T')[0]}
+                        value={format(selectedDate, 'yyyy-MM-dd')}
                         onChange={handleDateChange}
                     />
                 </div>
@@ -240,3 +254,4 @@ const Deliveries = () => {
 };
 
 export default Deliveries;
+

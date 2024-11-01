@@ -29,12 +29,14 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
                 return '#e2e3e5'; // Light Green
             case 'out for delivery':
                 return '#cce5ff'; // Light Blue
-            case 'flagged for review':
+            case 'marked for review':
                 return '#fff3cd'; // Light Yellow
             case 'marked completed':
                 return '#d4edda'; // Light Grey
             case 'marked for deletion':
                 return '#f8d7da'; // Light Red
+            case 'final deletion':
+                return '#8B0000'; // Dark Red
             case 'restored':
                 return '#ffeeba'; // Light Orange
             default:
@@ -86,6 +88,16 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
             <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
             <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
 
+            <label htmlFor="driver-select">Assign Driver:</label>
+            <select name="drivers" id="driver-select">
+                <option value="">--Please choose an option--</option>
+                {drivers.map((driver) => (
+                    <option key={driver.id.S} value={driver.id.S}>
+                        {driver.firstName.S} {driver.lastName.S}
+                    </option>
+                ))}
+            </select>
+
             <div>
                 <button onClick={toggleHistoryVisibility}>
                     {isHistoryVisible ? 'Hide Delivery History' : 'Show Delivery History'}
@@ -118,6 +130,9 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
                 {isHistoryVisible && deliveryHistory.length === 0 && <p>No history available.</p>}
                 {error && <p className='error'>{error}</p>} {/* Display error if any */}
             </div>
+
+            <button onClick={() => onOutForDelivery(delivery.id.S)}>Out for Delivery</button>
+            <button onClick={() => onComplete(delivery.id.S)}>Mark as Completed</button>
         </div>
     );
 };
