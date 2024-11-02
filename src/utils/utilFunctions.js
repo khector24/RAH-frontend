@@ -40,3 +40,34 @@ export const fetchDeliveryHistory = async (id) => {
         setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
     }
 };
+
+export const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    });
+};
+
+// Function to get background color based on action
+export const getActionColor = (action) => {
+    switch (action) {
+        case 'created':
+            return '#d4edda'; // Light Green
+        case 'out for delivery':
+            return '#cce5ff'; // Light Blue
+        case 'marked for review':
+            return '#fff3cd'; // Light Yellow
+        case 'marked completed':
+            return '#e2e3e5'; // Light Grey
+        case 'marked for deletion':
+            return '#f8d7da'; // Light Red
+        default:
+            return 'transparent'; // Default background color
+    }
+};

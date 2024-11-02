@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/MarkedForDeletion.css'
+import { getActionColor, formatTimestamp } from '../utils/utilFunctions';
 
 const MarkedForDeletion = () => {
     const [markedDeliveries, setMarkedDeliveries] = useState([]);
@@ -10,39 +11,7 @@ const MarkedForDeletion = () => {
     // State to manage visibility of delivery history
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
 
-    // Function to format the timestamp to standard time
-    const formatTimestamp = (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        });
-    };
 
-    // Function to get background color based on action
-    const getActionColor = (action) => {
-        switch (action) {
-            case 'created':
-                return '#d4edda'; // Light Green
-            case 'out for delivery':
-                return '#cce5ff'; // Light Blue
-            case 'marked for review':
-                return '#fff3cd'; // Light Yellow
-            case 'marked completed':
-                return '#e2e3e5'; // Light Grey
-            case 'marked for deletion':
-                return '#f8d7da'; // Light Red
-            case 'restored':
-                return '#ffeeba'; // Light Orange
-            default:
-                return 'transparent'; // Default background color
-        }
-    };
 
     // Toggle delivery history visibility
     const toggleHistoryVisibility = () => {

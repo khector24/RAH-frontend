@@ -4,45 +4,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FlagIcon from '@mui/icons-material/Flag';
 import '../Styles/Components-Styles/Delivery.css';
 import axios from 'axios';
+import { getActionColor, formatTimestamp } from '../utils/utilFunctions';
 
 const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForDelivery, onComplete }) => {
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
     const [deliveryHistory, setDeliveryHistory] = useState([]); // Local state for delivery history
     const [error, setError] = useState(null); // State for error handling
-
-    const formatTimestamp = (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true,
-        });
-    };
-
-    const getActionColor = (action) => {
-        switch (action) {
-            case 'created':
-                return '#e2e3e5'; // Light Green
-            case 'out for delivery':
-                return '#cce5ff'; // Light Blue
-            case 'marked for review':
-                return '#fff3cd'; // Light Yellow
-            case 'marked completed':
-                return '#d4edda'; // Light Grey
-            case 'marked for deletion':
-                return '#f8d7da'; // Light Red
-            case 'final deletion':
-                return '#8B0000'; // Dark Red
-            case 'restored':
-                return '#ffeeba'; // Light Orange
-            default:
-                return 'transparent'; // Default background color
-        }
-    };
 
     const toggleHistoryVisibility = async () => {
         setIsHistoryVisible((prev) => !prev);
