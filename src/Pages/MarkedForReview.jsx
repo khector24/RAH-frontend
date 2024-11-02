@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { logDeliveryAction, getActionColor, formatTimestamp } from '../utils/utilFunctions';
+import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/MarkedForReview.css';
 
 const MarkedForReview = () => {
@@ -81,13 +81,11 @@ const MarkedForReview = () => {
         );
         if (confirmFinalDelete) {
             try {
-                const token = localStorage.getItem('token');
+                //const token = localStorage.getItem('token');
                 const username = localStorage.getItem('username');
 
                 await axios.delete(`http://localhost:3000/deliveries/${id}`, {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 });
 
                 if (username) {
@@ -109,15 +107,13 @@ const MarkedForReview = () => {
 
     const handleRestore = async (id) => {
         try {
-            const token = localStorage.getItem('token');
+            //const token = localStorage.getItem('token');
             const username = localStorage.getItem('username');
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
                 { markedForReview: false },
                 {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 }
             );
 

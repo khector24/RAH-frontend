@@ -71,3 +71,8 @@ export const getActionColor = (action) => {
             return 'transparent'; // Default background color
     }
 };
+
+export const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return { 'Authorization': `${token}` };
+};
