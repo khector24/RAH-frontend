@@ -4,7 +4,7 @@ import axios from 'axios';
 import Delivery from '../Components/delivery';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { format, startOfToday } from 'date-fns';
-import { logDeliveryAction } from '../utils/utilFunctions';
+import { getAuthHeaders, logDeliveryAction } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/Deliveries.css';
 
 const Deliveries = () => {
@@ -137,20 +137,18 @@ const Deliveries = () => {
         }
     };
 
-    const handleOutForDelivery = async (id) => {
+    const handleOutForDelivery = async (id, driverName) => {
         try {
-            const token = localStorage.getItem('token');
-            const username = localStorage.getItem('username'); // Get username directly here
+            const username = localStorage.getItem('username');
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 outForDelivery: true,
+                driver: driverName,
             }, {
-                headers: {
-                    'Authorization': `${token}`,
-                },
+                headers: getAuthHeaders(),
             });
 
-            if (username) { // Use username directly
+            if (username) {
                 await logDeliveryAction(id, 'out for delivery', username);
             } else {
                 console.error('Username not found. Cannot log action.');
@@ -164,17 +162,17 @@ const Deliveries = () => {
         }
     };
 
-    const handleComplete = async (id) => {
+
+
+    const handleComplete = async (id, driverName) => {
         try {
-            const token = localStorage.getItem('token');
             const username = localStorage.getItem('username'); // Get username directly here
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 markedCompleted: true,
+                driver: driverName,
             }, {
-                headers: {
-                    'Authorization': `${token}`,
-                },
+                headers: getAuthHeaders(),
             });
 
             if (username) { // Use username directly

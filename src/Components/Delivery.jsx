@@ -8,8 +8,13 @@ import { getActionColor, formatTimestamp } from '../utils/utilFunctions';
 
 const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForDelivery, onComplete }) => {
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-    const [deliveryHistory, setDeliveryHistory] = useState([]); // Local state for delivery history
-    const [error, setError] = useState(null); // State for error handling
+    const [deliveryHistory, setDeliveryHistory] = useState([]);
+    const [error, setError] = useState(null);
+    const [selectedDriver, setSelectedDriver] = useState('');
+
+    const handleDriverChange = (event) => {
+        setSelectedDriver(event.target.value);
+    };
 
     const toggleHistoryVisibility = async () => {
         setIsHistoryVisible((prev) => !prev);
@@ -56,10 +61,10 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
             <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
 
             <label htmlFor="driver-select">Assign Driver:</label>
-            <select name="drivers" id="driver-select">
+            <select name="drivers" id="driver-select" onChange={handleDriverChange}>
                 <option value="">--Please choose an option--</option>
                 {drivers.map((driver) => (
-                    <option key={driver.id.S} value={driver.id.S}>
+                    <option key={driver.id.S} value={`${driver.firstName.S} ${driver.lastName.S}`}>
                         {driver.firstName.S} {driver.lastName.S}
                     </option>
                 ))}
@@ -95,18 +100,22 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
                     </div>
                 )}
                 {isHistoryVisible && deliveryHistory.length === 0 && <p>No history available.</p>}
-                {error && <p className='error'>{error}</p>} {/* Display error if any */}
+                {error && <p className='error'>{error}</p>}
             </div>
 
-            <button onClick={() => onOutForDelivery(delivery.id.S)}>Out for Delivery</button>
-            <button onClick={() => onComplete(delivery.id.S)}>Mark as Completed</button>
+            <button
+                onClick={() => onOutForDelivery(delivery.id.S, selectedDriver)}
+                disabled={!selectedDriver} // Disable if no driver selected
+            >
+                Mark as Out for Delivery
+            </button>
+
+            <button onClick={() => onComplete(delivery.id.S, selectedDriver)}>Mark as Completed</button>
         </div>
     );
 };
 
 export default Delivery;
-
-
 
 
 

@@ -148,6 +148,7 @@ const OutForDelivery = () => {
                     <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
                     <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
                     <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
+                    <p>Driver: {delivery.driver?.S || 'N/A'}</p>
                     <button onClick={() => toggleHistoryVisibility(delivery.id.S)}>
                         {deliveryHistories[delivery.id.S]?.isVisible ? 'Hide Delivery History' : 'Show Delivery History'}
                     </button>
