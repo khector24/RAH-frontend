@@ -1,0 +1,14 @@
+.delivery {}
+
+.delivery .delivery-history .history-item {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid black;
+    /* Keep or adjust as needed */
+    display: flex;
+}
+
+/* Optionally, add styles for the items inside history-item */
+.delivery .delivery-history .history-item .item {
+    flex: 1;
+}

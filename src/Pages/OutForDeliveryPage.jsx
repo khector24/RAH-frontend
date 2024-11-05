@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/OutForDelivery.css';
 import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders } from '../utils/utilFunctions';
+import "../Styles/Page-Styles/MarkedDeliveries.css"
 
 const OutForDelivery = () => {
     const [outDeliveries, setOutDeliveries] = useState([]);
@@ -55,11 +56,8 @@ const OutForDelivery = () => {
     useEffect(() => {
         const fetchOutDeliveries = async () => {
             try {
-                const token = localStorage.getItem('token');
                 const response = await axios.get('http://localhost:3000/deliveries', {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 });
 
                 const deliveriesOutForDelivery = response.data.filter(
@@ -143,7 +141,7 @@ const OutForDelivery = () => {
         <div>
             <h2>Out for Delivery</h2>
             {outDeliveries.map((delivery) => (
-                <div className='Delivery' key={delivery.id.S}>
+                <div className='delivery' key={delivery.id.S}>
                     <p>Customer: {delivery.customerName?.S}</p>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
                     <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>

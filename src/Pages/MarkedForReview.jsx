@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/MarkedForReview.css';
+import "../Styles/Page-Styles/MarkedDeliveries.css"
 
 const MarkedForReview = () => {
     const [markedDeliveries, setMarkedDeliveries] = useState([]);
@@ -143,7 +144,7 @@ const MarkedForReview = () => {
         <div>
             <h2>Deliveries Marked for Review</h2>
             {markedDeliveries.map((delivery) => (
-                <div className='Delivery' key={delivery.id.S}>
+                <div className='delivery' key={delivery.id.S}>
                     <p>Customer: {delivery.customerName?.S}</p>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
                     <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>

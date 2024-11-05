@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import '../Styles/Page-Styles/EditDelivery.css';
+import { logDeliveryAction, getAuthHeaders } from '../utils/utilFunctions';
 
 export default function EditDelivery() {
     const { id } = useParams();
@@ -26,9 +27,7 @@ export default function EditDelivery() {
                 }
 
                 const response = await axios.get(`http://localhost:3000/deliveries/${id}`, {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 });
                 const deliveryData = response.data;
 
@@ -58,6 +57,8 @@ export default function EditDelivery() {
                 throw new Error('Token not found');
             }
 
+            const username = localStorage.getItem('username');
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 customerName: data.customerName,
                 customerPhoneNumber: data.customerPhoneNumber,
@@ -67,10 +68,14 @@ export default function EditDelivery() {
                 deliveryNotes: data.deliveryNotes,
                 driverId: data.driverId, // Include driverId if it's part of the update
             }, {
-                headers: {
-                    'Authorization': `${token}`,
-                },
+                headers: getAuthHeaders()
             });
+
+            if (username) {
+                await logDeliveryAction(id, "updated", username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
 
             navigate('/deliveries');
         } catch (err) {

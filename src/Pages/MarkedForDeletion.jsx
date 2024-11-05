@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/MarkedForDeletion.css'
 import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders, fetchDeliveryHistory } from '../utils/utilFunctions';
+import "../Styles/Page-Styles/MarkedDeliveries.css"
 
 const MarkedForDeletion = () => {
     const [markedDeliveries, setMarkedDeliveries] = useState([]);
@@ -29,6 +30,27 @@ const MarkedForDeletion = () => {
         });
     };
 
+    const fetchDeliveryHistory = async (deliveryId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            // Update the history state for this specific delivery
+            setDeliveryHistories((prevHistories) => ({
+                ...prevHistories,
+                [deliveryId]: {
+                    ...prevHistories[deliveryId],
+                    history: response.data,
+                },
+            }));
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+        }
+    };
+
     useEffect(() => {
         const fetchMarkedDeliveries = async () => {
             try {
@@ -52,7 +74,6 @@ const MarkedForDeletion = () => {
         };
 
         fetchMarkedDeliveries();
-        fetchDeliveryHistory();
     }, []);
 
     const handleFinalDelete = async (id) => {
@@ -123,7 +144,7 @@ const MarkedForDeletion = () => {
         <div>
             <h2>Deliveries Marked for Deletion</h2>
             {markedDeliveries.map((delivery) => (
-                <div className='Delivery' key={delivery.id.S}>
+                <div className='delivery' key={delivery.id.S}>
                     <p>Customer: {delivery.customerName?.S}</p>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
                     <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>

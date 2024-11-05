@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/MarkedForReview.css';
 import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders } from '../utils/utilFunctions';
+import "../Styles/Page-Styles/MarkedDeliveries.css"
 
 const MarkedCompleted = () => {
     const [markedDeliveries, setMarkedDeliveries] = useState([]);
@@ -33,7 +34,6 @@ const MarkedCompleted = () => {
 
     const fetchDeliveryHistory = async (deliveryId) => {
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
                 headers: getAuthHeaders(),
             });
@@ -141,7 +141,7 @@ const MarkedCompleted = () => {
         <div>
             <h2>Completed Deliveries</h2>
             {markedDeliveries.map((delivery) => (
-                <div className='Delivery' key={delivery.id.S}>
+                <div className='delivery' key={delivery.id.S}>
                     <p>Customer: {delivery.customerName?.S}</p>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
                     <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>
