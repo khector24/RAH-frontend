@@ -1,21 +1,32 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/MarkedForDeletion.css'
-import { getActionColor, formatTimestamp } from '../utils/utilFunctions';
+import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders, fetchDeliveryHistory } from '../utils/utilFunctions';
 
 const MarkedForDeletion = () => {
     const [markedDeliveries, setMarkedDeliveries] = useState([]);
+    const [deliveryHistories, setDeliveryHistories] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // State to manage visibility of delivery history
-    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-
-
-
     // Toggle delivery history visibility
-    const toggleHistoryVisibility = () => {
-        setIsHistoryVisible((prev) => !prev);
+    const toggleHistoryVisibility = async (deliveryId) => {
+        setDeliveryHistories((prevHistories) => {
+            const isVisible = prevHistories[deliveryId]?.isVisible;
+
+            if (!isVisible) {
+                // Fetch delivery history if it's not visible
+                fetchDeliveryHistory(deliveryId);
+            }
+
+            return {
+                ...prevHistories,
+                [deliveryId]: {
+                    isVisible: !isVisible,
+                    history: prevHistories[deliveryId]?.history || [],
+                },
+            };
+        });
     };
 
     useEffect(() => {
@@ -41,6 +52,7 @@ const MarkedForDeletion = () => {
         };
 
         fetchMarkedDeliveries();
+        fetchDeliveryHistory();
     }, []);
 
     const handleFinalDelete = async (id) => {
@@ -49,12 +61,18 @@ const MarkedForDeletion = () => {
         );
         if (confirmFinalDelete) {
             try {
-                const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username');
+
                 await axios.delete(`http://localhost:3000/deliveries/${id}`, {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 });
+
+                if (username) {
+                    await logDeliveryAction(id, "final deletion", username);
+                } else {
+                    console.error('Username not found. Cannot log action.');
+                }
+
                 alert("Item permanently deleted!");
                 setMarkedDeliveries((prevDeliveries) =>
                     prevDeliveries.filter((delivery) => delivery.id.S !== id)
@@ -68,15 +86,21 @@ const MarkedForDeletion = () => {
 
     const handleRestore = async (id) => {
         try {
-            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
                 { markedForDeletion: false },
                 {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 }
             );
+
+            if (username) {
+                await logDeliveryAction(id, "restored", username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
+
             alert("Item restored successfully!");
             setMarkedDeliveries((prevDeliveries) =>
                 prevDeliveries.filter((delivery) => delivery.id.S !== id)
@@ -106,20 +130,16 @@ const MarkedForDeletion = () => {
                     <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
                     <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
                     <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
-                    {/* Include other details as needed */}
-
+                    <button onClick={() => toggleHistoryVisibility(delivery.id.S)}>
+                        {deliveryHistories[delivery.id.S]?.isVisible ? 'Hide Delivery History' : 'Show Delivery History'}
+                    </button>
                     <div>
-                        {/* <h4>Delivery History:</h4> */}
-                        <button onClick={toggleHistoryVisibility}>
-                            {isHistoryVisible ? 'Hide Delivery History' : 'Show Delivery History'}
-                        </button>
-
-                        {isHistoryVisible && delivery.deliveryHistory?.L && (
+                        {deliveryHistories[delivery.id.S]?.isVisible && deliveryHistories[delivery.id.S]?.history.length > 0 && (
                             <div className='delivery-history'>
-                                {delivery.deliveryHistory.L.map((historyItem, index) => {
-                                    const action = historyItem.M.action.S;
-                                    const manager = historyItem.M.manager.S;
-                                    const timestamp = historyItem.M.timestamp.S;
+                                {deliveryHistories[delivery.id.S].history.map((historyItem, index) => {
+                                    const action = historyItem.action.S;
+                                    const manager = historyItem.manager.S;
+                                    const timestamp = historyItem.timestamp.S;
                                     const actionColor = getActionColor(action.toLowerCase());
 
                                     return (

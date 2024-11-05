@@ -81,7 +81,6 @@ const MarkedForReview = () => {
         );
         if (confirmFinalDelete) {
             try {
-                //const token = localStorage.getItem('token');
                 const username = localStorage.getItem('username');
 
                 await axios.delete(`http://localhost:3000/deliveries/${id}`, {
@@ -107,7 +106,6 @@ const MarkedForReview = () => {
 
     const handleRestore = async (id) => {
         try {
-            //const token = localStorage.getItem('token');
             const username = localStorage.getItem('username');
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,

@@ -3,52 +3,53 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/Page-Styles/OutForDelivery.css';
+import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders } from '../utils/utilFunctions';
 
 const OutForDelivery = () => {
     const [outDeliveries, setOutDeliveries] = useState([]);
+    const [deliveryHistories, setDeliveryHistories] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // State to manage visibility of delivery history
-    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    // Toggle delivery history visibility
+    const toggleHistoryVisibility = async (deliveryId) => {
+        setDeliveryHistories((prevHistories) => {
+            const isVisible = prevHistories[deliveryId]?.isVisible;
 
-    // Function to format the timestamp to standard time
-    const formatTimestamp = (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
+            if (!isVisible) {
+                // Fetch delivery history if it's not visible
+                fetchDeliveryHistory(deliveryId);
+            }
+
+            return {
+                ...prevHistories,
+                [deliveryId]: {
+                    isVisible: !isVisible,
+                    history: prevHistories[deliveryId]?.history || [],
+                },
+            };
         });
     };
 
-    // Function to get background color based on action
-    const getActionColor = (action) => {
-        switch (action) {
-            case 'created':
-                return '#d4edda'; // Light Green
-            case 'out for delivery':
-                return '#cce5ff'; // Light Blue
-            case 'marked for review':
-                return '#fff3cd'; // Light Yellow
-            case 'marked completed':
-                return '#e2e3e5'; // Light Grey
-            case 'marked for deletion':
-                return '#f8d7da'; // Light Red
-            case 'restored':
-                return '#ffeeba'; // Light Orange
-            default:
-                return 'transparent'; // Default background color
+    const fetchDeliveryHistory = async (deliveryId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
+                headers: {
+                    'Authorization': `${token}`,
+                },
+            });
+            // Update the history state for this specific delivery
+            setDeliveryHistories((prevHistories) => ({
+                ...prevHistories,
+                [deliveryId]: {
+                    ...prevHistories[deliveryId],
+                    history: response.data,
+                },
+            }));
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
         }
-    };
-
-    // Toggle delivery history visibility
-    const toggleHistoryVisibility = () => {
-        setIsHistoryVisible((prev) => !prev);
     };
 
     useEffect(() => {
@@ -78,15 +79,21 @@ const OutForDelivery = () => {
 
     const handleComplete = async (id) => {
         try {
-            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
                 { markedCompleted: true },
                 {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 }
             );
+
+            if (username) {
+                await logDeliveryAction(id, "restored", username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
+
             alert("Delivery marked as completed!");
             setOutDeliveries((prevDeliveries) =>
                 prevDeliveries.filter((delivery) => delivery.id.S !== id)
@@ -99,16 +106,20 @@ const OutForDelivery = () => {
 
     const handleRestore = async (id) => {
         try {
-            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
                 { outForDelivery: false },
                 {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 }
             );
 
+            if (username) {
+                await logDeliveryAction(id, "restored", username);
+            } else {
+                console.error('Username not found. Cannot log action.');
+            }
 
             alert("Item restored successfully!");
             setOutDeliveries((prevDeliveries) =>
@@ -139,19 +150,16 @@ const OutForDelivery = () => {
                     <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
                     <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
                     <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
-
+                    <button onClick={() => toggleHistoryVisibility(delivery.id.S)}>
+                        {deliveryHistories[delivery.id.S]?.isVisible ? 'Hide Delivery History' : 'Show Delivery History'}
+                    </button>
                     <div>
-                        {/* <h4>Delivery History:</h4> */}
-                        <button onClick={toggleHistoryVisibility}>
-                            {isHistoryVisible ? 'Hide Delivery History' : 'Show Delivery History'}
-                        </button>
-
-                        {isHistoryVisible && delivery.deliveryHistory?.L && (
+                        {deliveryHistories[delivery.id.S]?.isVisible && deliveryHistories[delivery.id.S]?.history.length > 0 && (
                             <div className='delivery-history'>
-                                {delivery.deliveryHistory.L.map((historyItem, index) => {
-                                    const action = historyItem.M.action.S;
-                                    const manager = historyItem.M.manager.S;
-                                    const timestamp = historyItem.M.timestamp.S;
+                                {deliveryHistories[delivery.id.S].history.map((historyItem, index) => {
+                                    const action = historyItem.action.S;
+                                    const manager = historyItem.manager.S;
+                                    const timestamp = historyItem.timestamp.S;
                                     const actionColor = getActionColor(action.toLowerCase());
 
                                     return (

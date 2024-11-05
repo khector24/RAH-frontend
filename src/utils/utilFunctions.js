@@ -23,23 +23,44 @@ export const logDeliveryAction = async (id, action, manager) => {
     }
 };
 
-export const fetchDeliveryHistory = async (id) => {
+export const fetchDeliveryHistory = async (deliveryId) => {
     try {
         const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Token not found');
-        }
-
-        const deliveryHistoryResponse = await axios.get(`http://localhost:3000/deliveries/${id}/history`, {
+        const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
             headers: {
                 'Authorization': `${token}`,
             },
         });
-        setDeliveries(deliveryHistoryResponse.data);
+        // Update the history state for this specific delivery
+        setDeliveryHistories((prevHistories) => ({
+            ...prevHistories,
+            [deliveryId]: {
+                ...prevHistories[deliveryId],
+                history: response.data,
+            },
+        }));
     } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
     }
 };
+
+// export const fetchDeliveryHistory = async (id) => {
+//     try {
+//         const token = localStorage.getItem('token');
+//         if (!token) {
+//             throw new Error('Token not found');
+//         }
+
+//         const deliveryHistoryResponse = await axios.get(`http://localhost:3000/deliveries/${id}/history`, {
+//             headers: {
+//                 'Authorization': `${token}`,
+//             },
+//         });
+//         setDeliveries(deliveryHistoryResponse.data);
+//     } catch (err) {
+//         setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+//     }
+// };
 
 export const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
