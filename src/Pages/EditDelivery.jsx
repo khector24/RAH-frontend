@@ -8,8 +8,14 @@ import { logDeliveryAction, getAuthHeaders } from '../utils/utilFunctions';
 export default function EditDelivery() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [drivers, setDrivers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedDriver, setSelectedDriver] = useState('');
+
+    const handleDriverChange = (event) => {
+        setSelectedDriver(event.target.value);
+    };
 
     const {
         register,
@@ -38,8 +44,8 @@ export default function EditDelivery() {
                 setValue('deliveryDate', deliveryData.deliveryDate?.S || '');
                 setValue('timeRange', deliveryData.timeRange?.S || '');
                 setValue('deliveryNotes', deliveryData.deliveryNotes?.S || '');
-                // Assuming 'driverId' is part of the delivery data
-                setValue('driverId', deliveryData.driverId?.S || '');
+                // Set the selected driver based on delivery data
+                setSelectedDriver(deliveryData.driverId?.S || '');
             } catch (err) {
                 console.error('Error fetching delivery:', err);
                 setError(err.response?.data?.message || 'Failed to fetch delivery.');
@@ -47,7 +53,24 @@ export default function EditDelivery() {
                 setLoading(false);
             }
         };
+
+        const fetchDrivers = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const driverResponse = await axios.get('http://localhost:3000/drivers', {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                });
+                setDrivers(driverResponse.data);
+            } catch (err) {
+                console.error('Error fetching drivers:', err);
+                setError(err.response?.data?.message || 'Failed to fetch drivers.');
+            }
+        };
+
         fetchDelivery();
+        fetchDrivers();
     }, [id, setValue]);
 
     const onSubmit = async (data) => {
@@ -143,10 +166,19 @@ export default function EditDelivery() {
                     />
                 </div>
                 <div>
-                    <label>Assign Driver:</label>
-                    <select {...register('driverId')}>
+                    <label htmlFor="driver-select">Assign Driver:</label>
+                    <select
+                        name="drivers"
+                        id="driver-select"
+                        value={selectedDriver} // Bind to selectedDriver state
+                        onChange={handleDriverChange}
+                    >
                         <option value="">--Please choose an option--</option>
-                        {/* Add driver options here */}
+                        {drivers.map((driver) => (
+                            <option key={driver.id.S} value={driver.id.S}>
+                                {driver.firstName.S} {driver.lastName.S}
+                            </option>
+                        ))}
                     </select>
                 </div>
                 <div className='bottom-buttons'>

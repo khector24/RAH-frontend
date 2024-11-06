@@ -10,26 +10,6 @@ const MarkedForDeletion = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Toggle delivery history visibility
-    const toggleHistoryVisibility = async (deliveryId) => {
-        setDeliveryHistories((prevHistories) => {
-            const isVisible = prevHistories[deliveryId]?.isVisible;
-
-            if (!isVisible) {
-                // Fetch delivery history if it's not visible
-                fetchDeliveryHistory(deliveryId);
-            }
-
-            return {
-                ...prevHistories,
-                [deliveryId]: {
-                    isVisible: !isVisible,
-                    history: prevHistories[deliveryId]?.history || [],
-                },
-            };
-        });
-    };
-
     const fetchDeliveryHistory = async (deliveryId) => {
         try {
             const token = localStorage.getItem('token');
@@ -49,6 +29,26 @@ const MarkedForDeletion = () => {
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
         }
+    };
+
+    // Toggle delivery history visibility
+    const toggleHistoryVisibility = async (deliveryId) => {
+        setDeliveryHistories((prevHistories) => {
+            const isVisible = prevHistories[deliveryId]?.isVisible;
+
+            if (!isVisible) {
+                // Fetch delivery history if it's not visible
+                fetchDeliveryHistory(deliveryId);
+            }
+
+            return {
+                ...prevHistories,
+                [deliveryId]: {
+                    isVisible: !isVisible,
+                    history: prevHistories[deliveryId]?.history || [],
+                },
+            };
+        });
     };
 
     useEffect(() => {
@@ -110,7 +110,10 @@ const MarkedForDeletion = () => {
             const username = localStorage.getItem('username');
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
-                { markedForDeletion: false },
+                {
+                    markedForDeletion: false,
+                    deletionDate: " ",
+                },
                 {
                     headers: getAuthHeaders(),
                 }

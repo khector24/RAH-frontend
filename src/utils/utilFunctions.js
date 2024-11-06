@@ -81,3 +81,11 @@ export const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return { 'Authorization': `${token}` };
 };
+
+// Returns a Unix timestamp for one week from the current time
+export const getOneWeekFromNow = () => {
+    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
+    const oneWeekFromNow = Date.now() + oneWeekInMs; // Current time + one week
+    return Math.floor(oneWeekFromNow / 1000); // Convert to Unix timestamp in seconds
+};
+

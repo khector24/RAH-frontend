@@ -1,16 +1,21 @@
 // Pages/OutForDelivery.jsx
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../Styles/Page-Styles/OutForDelivery.css';
-import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders } from '../utils/utilFunctions';
-import "../Styles/Page-Styles/MarkedDeliveries.css"
+import { logDeliveryAction, getActionColor, formatTimestamp, getAuthHeaders, getOneWeekFromNow } from '../utils/utilFunctions';
+import "../Styles/Page-Styles/MarkedDeliveries.css";
+import EditIcon from '@mui/icons-material/Edit';
+
 
 const OutForDelivery = () => {
     const [outDeliveries, setOutDeliveries] = useState([]);
     const [deliveryHistories, setDeliveryHistories] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const navigate = useNavigate();
 
     // Toggle delivery history visibility
     const toggleHistoryVisibility = async (deliveryId) => {
@@ -78,9 +83,13 @@ const OutForDelivery = () => {
     const handleComplete = async (id) => {
         try {
             const username = localStorage.getItem('username');
+            const deletionDate = getOneWeekFromNow();
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
-                { markedCompleted: true },
+                {
+                    markedCompleted: true,
+                    deletionDate: deletionDate,
+                },
                 {
                     headers: getAuthHeaders(),
                 }
@@ -107,7 +116,9 @@ const OutForDelivery = () => {
             const username = localStorage.getItem('username');
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
-                { outForDelivery: false },
+                {
+                    outForDelivery: false,
+                },
                 {
                     headers: getAuthHeaders(),
                 }
@@ -129,6 +140,10 @@ const OutForDelivery = () => {
         }
     };
 
+    const handleEdit = (id) => {
+        navigate(`/deliveries/${id}/edit`);
+    };
+
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -142,7 +157,15 @@ const OutForDelivery = () => {
             <h2>Out for Delivery</h2>
             {outDeliveries.map((delivery) => (
                 <div className='delivery' key={delivery.id.S}>
-                    <p>Customer: {delivery.customerName?.S}</p>
+                    <div className='delivery-heading'>
+                        <h3>Customer: {delivery.customerName?.S || 'N/A'}</h3>
+                        <div className='heading-buttons'>
+                            <EditIcon
+                                titleAccess="Edit Delivery"
+                                onClick={() => handleEdit(delivery.id.S)}
+                            />
+                        </div>
+                    </div>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
                     <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>
                     <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import Delivery from '../Components/delivery';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { format, startOfToday } from 'date-fns';
-import { getAuthHeaders, logDeliveryAction } from '../utils/utilFunctions';
+import { getAuthHeaders, logDeliveryAction, getOneWeekFromNow } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/Deliveries.css';
 
 const Deliveries = () => {
@@ -23,9 +23,7 @@ const Deliveries = () => {
             }
 
             const deliveryResponse = await axios.get('http://localhost:3000/deliveries', {
-                headers: {
-                    'Authorization': `${token}`,
-                },
+                headers: getAuthHeaders(),
             });
             setDeliveries(deliveryResponse.data);
         } catch (err) {
@@ -54,11 +52,8 @@ const Deliveries = () => {
     useEffect(() => {
         const fetchDrivers = async () => {
             try {
-                const token = localStorage.getItem('token');
                 const driverResponse = await axios.get('http://localhost:3000/drivers', {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 });
                 setDrivers(driverResponse.data);
             } catch (err) {
@@ -84,15 +79,14 @@ const Deliveries = () => {
         const confirmDelete = window.confirm("Are you sure you want to mark this delivery for deletion?");
         if (confirmDelete) {
             try {
-                const token = localStorage.getItem('token');
+                const deletionDate = getOneWeekFromNow();
                 const username = localStorage.getItem('username'); // Get username directly here
 
                 await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
-                    markedForDeletion: true
+                    markedForDeletion: true,
+                    deletionDate: deletionDate,
                 }, {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
+                    headers: getAuthHeaders(),
                 });
 
                 if (username) { // Use username directly
@@ -162,15 +156,15 @@ const Deliveries = () => {
         }
     };
 
-
-
     const handleComplete = async (id, driverName) => {
         try {
             const username = localStorage.getItem('username'); // Get username directly here
+            const deletionDate = getOneWeekFromNow();
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 markedCompleted: true,
                 driver: driverName,
+                deletionDate: deletionDate,
             }, {
                 headers: getAuthHeaders(),
             });
@@ -194,7 +188,7 @@ const Deliveries = () => {
     };
 
     const filteredDeliveries = deliveries.filter((delivery) => {
-        const deliveryDate = delivery.deliveryDate.S;
+        const deliveryDate = delivery.deliveryDate?.S;
         const selectedDateString = format(selectedDate, 'yyyy-MM-dd');
         return (
             deliveryDate === selectedDateString &&

@@ -12,6 +12,24 @@ const MarkedCompleted = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const fetchDeliveryHistory = async (deliveryId) => {
+        try {
+            const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
+                headers: getAuthHeaders(),
+            });
+            // Update the history state for this specific delivery
+            setDeliveryHistories((prevHistories) => ({
+                ...prevHistories,
+                [deliveryId]: {
+                    ...prevHistories[deliveryId],
+                    history: response.data,
+                },
+            }));
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+        }
+    };
+
     // Toggle delivery history visibility
     const toggleHistoryVisibility = async (deliveryId) => {
         setDeliveryHistories((prevHistories) => {
@@ -30,24 +48,6 @@ const MarkedCompleted = () => {
                 },
             };
         });
-    };
-
-    const fetchDeliveryHistory = async (deliveryId) => {
-        try {
-            const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
-                headers: getAuthHeaders(),
-            });
-            // Update the history state for this specific delivery
-            setDeliveryHistories((prevHistories) => ({
-                ...prevHistories,
-                [deliveryId]: {
-                    ...prevHistories[deliveryId],
-                    history: response.data,
-                },
-            }));
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
-        }
     };
 
     useEffect(() => {
@@ -107,7 +107,10 @@ const MarkedCompleted = () => {
             const username = localStorage.getItem('username');
 
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
-                { markedCompleted: false },
+                {
+                    markedCompleted: false,
+                    deletionDate: " ",
+                },
                 {
                     headers: getAuthHeaders(),
                 }
