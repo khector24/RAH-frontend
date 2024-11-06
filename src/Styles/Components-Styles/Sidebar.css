@@ -16,6 +16,7 @@
     margin: 0;
     padding: 10px 0;
     color: #ecf0f1;
+    font-size: 40px;
 }
 
 .sidebar nav {
@@ -53,4 +54,26 @@
     color: white;
     /* Ensures the text color is readable */
     font-weight: bold;
+}
+
+/* Center icons and text vertically within each link */
+.sidebar nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    /* Makes icon and text align side-by-side */
+    align-items: center;
+    /* Centers icon and text vertically */
+}
+
+.sidebar .icon {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 2rem;
+    /* Increase icon size */
+    margin-right: 8px;
+    /* Space between icon and text */
 }
