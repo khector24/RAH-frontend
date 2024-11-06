@@ -11,7 +11,7 @@ export default function Header() {
         const confirmLogout = window.confirm("Are you sure you want to logout?");
         if (confirmLogout) {
             localStorage.removeItem('token');
-            navigate('/login');
+            navigate('/');
         }
     };
 

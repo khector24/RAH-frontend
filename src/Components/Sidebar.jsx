@@ -5,6 +5,7 @@ import DriveEtaIcon from '@mui/icons-material/DriveEta';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ListIcon from '@mui/icons-material/List';
+import HomeIcon from '@mui/icons-material/Home';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import '../Styles/Components-Styles/Sidebar.css';
 
@@ -14,10 +15,10 @@ export default function Sidebar() {
             <div className='dashboard'>
                 <h3>Dashboard</h3>
                 <nav>
-                    <NavLink to="/" className={({ isActive }) => isActive ? 'active-link' : ''} end>
-                        <SupervisorAccountIcon className="icon" />
+                    {/* <NavLink to="/" className={({ isActive }) => isActive ? 'active-link' : ''} end>
+                        <HomeIcon className="icon" />
                         Home
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink to="/managers" className={({ isActive }) => isActive ? 'active-link' : ''} end>
                         <SupervisorAccountIcon className="icon" />
                         Managers
