@@ -12,22 +12,39 @@ const MarkedForDeletion = () => {
 
     const fetchDeliveryHistory = async (deliveryId) => {
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
-                headers: {
-                    'Authorization': `${token}`,
-                },
+                headers: getAuthHeaders(),
             });
+
             // Update the history state for this specific delivery
             setDeliveryHistories((prevHistories) => ({
                 ...prevHistories,
                 [deliveryId]: {
                     ...prevHistories[deliveryId],
                     history: response.data,
+                    error: null, // Clear any previous error
                 },
             }));
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+            if (err.response?.status === 404) {
+                setDeliveryHistories((prevHistories) => ({
+                    ...prevHistories,
+                    [deliveryId]: {
+                        ...prevHistories[deliveryId],
+                        history: [],
+                        error: 'No delivery history exists for this delivery.',
+                    },
+                }));
+            } else {
+                setDeliveryHistories((prevHistories) => ({
+                    ...prevHistories,
+                    [deliveryId]: {
+                        ...prevHistories[deliveryId],
+                        history: [],
+                        error: 'Failed to fetch the delivery history.',
+                    },
+                }));
+            }
         }
     };
 
@@ -158,28 +175,32 @@ const MarkedForDeletion = () => {
                         {deliveryHistories[delivery.id.S]?.isVisible ? 'Hide Delivery History' : 'Show Delivery History'}
                     </button>
                     <div>
-                        {deliveryHistories[delivery.id.S]?.isVisible && deliveryHistories[delivery.id.S]?.history.length > 0 && (
+                        {deliveryHistories[delivery.id.S]?.isVisible && (
                             <div className='delivery-history'>
-                                {deliveryHistories[delivery.id.S].history.map((historyItem, index) => {
-                                    const action = historyItem.action.S;
-                                    const manager = historyItem.manager.S;
-                                    const timestamp = historyItem.timestamp.S;
-                                    const actionColor = getActionColor(action.toLowerCase());
+                                {deliveryHistories[delivery.id.S]?.error ? (
+                                    <p className='no-delivery-message'>{deliveryHistories[delivery.id.S].error}</p>
+                                ) : (
+                                    deliveryHistories[delivery.id.S]?.history.map((historyItem, index) => {
+                                        const action = historyItem.action.S;
+                                        const manager = historyItem.manager.S;
+                                        const timestamp = historyItem.timestamp.S;
+                                        const actionColor = getActionColor(action.toLowerCase());
 
-                                    return (
-                                        <div className='history-item' key={index} style={{ backgroundColor: actionColor }}>
-                                            <div className='item'>
-                                                Action: {action}
+                                        return (
+                                            <div className='history-item' key={index} style={{ backgroundColor: actionColor }}>
+                                                <div className='item'>
+                                                    Action: {action}
+                                                </div>
+                                                <div className='item'>
+                                                    Manager: {manager}
+                                                </div>
+                                                <div className='item'>
+                                                    Time: {formatTimestamp(timestamp)}
+                                                </div>
                                             </div>
-                                            <div className='item'>
-                                                Manager: {manager}
-                                            </div>
-                                            <div className='item'>
-                                                Time: {formatTimestamp(timestamp)}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })
+                                )}
                             </div>
                         )}
                     </div>
