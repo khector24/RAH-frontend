@@ -1,4 +1,4 @@
-// Pages/OutForDelivery.jsx
+// src/Pages/OutForDelivery.jsx
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

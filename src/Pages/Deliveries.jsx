@@ -31,23 +31,23 @@ const Deliveries = () => {
         }
     };
 
-    const fetchDeliveryHistory = async (id) => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token not found');
-            }
+    // const fetchDeliveryHistory = async (id) => {
+    //     try {
+    //         const token = localStorage.getItem('token');
+    //         if (!token) {
+    //             throw new Error('Token not found');
+    //         }
 
-            const deliveryHistoryResponse = await axios.get(`http://localhost:3000/deliveries/${id}/history`, {
-                headers: {
-                    'Authorization': `${token}`,
-                },
-            });
-            setDeliveries(deliveryHistoryResponse.data);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
-        }
-    };
+    //         const deliveryHistoryResponse = await axios.get(`http://localhost:3000/deliveries/${id}/history`, {
+    //             headers: {
+    //                 'Authorization': `${token}`,
+    //             },
+    //         });
+    //         setDeliveries(deliveryHistoryResponse.data);
+    //     } catch (err) {
+    //         setError(err.response?.data?.message || 'Failed to fetch the delivery history.');
+    //     }
+    // };
 
     useEffect(() => {
         const fetchDrivers = async () => {
