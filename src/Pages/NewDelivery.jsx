@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { logDeliveryAction } from '../utils/utilFunctions';
+import { logDeliveryAction, getAuthHeaders } from '../utils/utilFunctions';
 import '../Styles/Page-Styles/NewDelivery.css';
 
 export default function NewDelivery() {
     const [managerId, setManagerId] = useState('');
-    const [drivers, setDrivers] = useState([]); // State to hold drivers
-    const [selectedDriver, setSelectedDriver] = useState(''); // State to hold selected driver ID
     const navigate = useNavigate();
     const {
         register,
@@ -29,23 +27,6 @@ export default function NewDelivery() {
         if (username) {
             setManagerId(username);
         }
-
-        // Fetch drivers from the API
-        const fetchDrivers = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:3000/drivers', {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
-                });
-                setDrivers(response.data); // Set drivers to state
-            } catch (error) {
-                console.error('Error fetching drivers:', error);
-            }
-        };
-
-        fetchDrivers();
     }, []);
 
     const onSubmit = async (data) => {
@@ -64,7 +45,6 @@ export default function NewDelivery() {
                     {
                         ...data,
                         managerId, // Include manager ID
-                        // driverId is no longer included
                     },
                     {
                         headers: {

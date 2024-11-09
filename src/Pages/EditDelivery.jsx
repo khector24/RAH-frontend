@@ -153,12 +153,18 @@ export default function EditDelivery() {
                 </div>
                 <div>
                     <label>Time Range:</label>
-                    <input
-                        type="text"
+                    <select
                         {...register('timeRange', { required: 'Time Range is required.' })}
-                    />
+                        defaultValue={selectedDriver ? selectedDriver : ""} // Set the default value to the pre-selected time range
+                    >
+                        <option value="" disabled>Select a time range</option>
+                        <option value="7 AM to 12 PM">7 AM to 12 PM</option>
+                        <option value="12 PM to 5 PM">12 PM to 5 PM</option>
+                        <option value="5 PM to 9 PM">5 PM to 9 PM</option> {/* Add more options as needed */}
+                    </select>
                     {errors.timeRange && <p className='error-message'>{errors.timeRange.message}</p>}
                 </div>
+
                 <div>
                     <label>Delivery Notes:</label>
                     <textarea
