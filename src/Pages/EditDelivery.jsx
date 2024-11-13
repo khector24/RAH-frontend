@@ -40,6 +40,7 @@ export default function EditDelivery() {
                 // Set form values based on the fetched delivery data
                 setValue('customerName', deliveryData.customerName?.S || '');
                 setValue('customerPhoneNumber', deliveryData.customerPhoneNumber?.S || '');
+                setValue('customerEmail', deliveryData.customerEmail?.S || '');
                 setValue('customerAddress', deliveryData.customerAddress?.S || '');
                 setValue('deliveryDate', deliveryData.deliveryDate?.S || '');
                 setValue('timeRange', deliveryData.timeRange?.S || '');
@@ -85,6 +86,7 @@ export default function EditDelivery() {
             await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
                 customerName: data.customerName,
                 customerPhoneNumber: data.customerPhoneNumber,
+                customerEmail: data.customerEmail,
                 customerAddress: data.customerAddress,
                 deliveryDate: data.deliveryDate,
                 timeRange: data.timeRange,
@@ -134,6 +136,14 @@ export default function EditDelivery() {
                         {...register('customerPhoneNumber', { required: 'Phone Number is required.' })}
                     />
                     {errors.customerPhoneNumber && <p className='error-message'>{errors.customerPhoneNumber.message}</p>}
+                </div>
+                <div>
+                    <label>Email:</label>
+                    <input
+                        type="text"
+                        {...register('customerEmail', { required: 'Email is required.' })}
+                    />
+                    {errors.customerEmail && <p className='error-message'>{errors.customerEmail.message}</p>}
                 </div>
                 <div>
                     <label>Address:</label>

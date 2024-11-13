@@ -21,6 +21,12 @@ export default function NewDelivery() {
         return phonePattern.test(value) || 'Phone number must be in the format 123-456-7890.';
     };
 
+    // Function to validate email address
+    const validateEmail = (value) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(value) || 'Please enter a valid email address.';
+    };
+
     // Fetch the manager ID (username) on component mount
     useEffect(() => {
         const username = localStorage.getItem('username');
@@ -47,9 +53,7 @@ export default function NewDelivery() {
                         managerId, // Include manager ID
                     },
                     {
-                        headers: {
-                            'Authorization': `${token}`,
-                        },
+                        headers: getAuthHeaders(),
                     }
                 );
 
@@ -99,6 +103,18 @@ export default function NewDelivery() {
                         placeholder="e.g., 123-456-7890"
                     />
                     {errors.customerPhoneNumber && <p className='error-message'>{errors.customerPhoneNumber.message}</p>}
+                </div>
+                <div>
+                    <label>Customer Email:</label>
+                    <input
+                        type="text"
+                        {...register('customerEmail', {
+                            required: 'Customer email is required.',
+                            validate: validateEmail
+                        })}
+                        placeholder="e.g., johnsmith@gmail.com"
+                    />
+                    {errors.customerEmail && <p className='error-message'>{errors.customerEmail.message}</p>}
                 </div>
                 <div>
                     <label>Delivery Address:</label>

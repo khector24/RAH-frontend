@@ -184,6 +184,7 @@ const OutForDelivery = () => {
                         </div>
                     </div>
                     <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
+                    <p>Email: {delivery.customerEmail?.S || 'N/A'}</p>
                     <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>
                     <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
                     <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
