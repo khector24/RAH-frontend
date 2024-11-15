@@ -5,6 +5,7 @@ import '../Styles/Components-Styles/Manager.css';
 export default function Manager({ manager, onDelete, onEdit }) {
     const firstName = manager?.firstName?.S || "First Name";
     const lastName = manager?.lastName?.S || "Last Name";
+    const email = manager?.email?.S || "N/A";
     const phoneNumber = manager?.phoneNumber?.S || "No phone number available";
 
     return (
@@ -14,7 +15,8 @@ export default function Manager({ manager, onDelete, onEdit }) {
                 <EditIcon titleAccess="Edit Manager" onClick={() => onEdit(manager.id.S)} />
                 <DeleteIcon titleAccess="Delete Manager" onClick={() => onDelete(manager.id.S)} />
             </h3>
-            <p>{phoneNumber}</p>
+            <p>Email: {email}</p>
+            <p>Phone Number: {phoneNumber}</p>
         </div>
     );
 }

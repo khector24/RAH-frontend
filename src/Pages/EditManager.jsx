@@ -21,6 +21,12 @@ export default function EditManager() {
         return phonePattern.test(value) || 'Phone number must be in the format 123-456-7890.';
     };
 
+    // Function to validate email address
+    const validateEmail = (value) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(value) || 'Please enter a valid email address.';
+    };
+
     const {
         register,
         handleSubmit,
@@ -45,9 +51,10 @@ export default function EditManager() {
 
                 // Set the form values
                 const managerData = response.data;
-                setValue('firstName', managerData.firstName.S);
-                setValue('lastName', managerData.lastName.S);
-                setValue('phoneNumber', managerData.phoneNumber.S);
+                setValue('firstName', managerData.firstName?.S);
+                setValue('lastName', managerData.lastName?.S);
+                setValue('phoneNumber', managerData.phoneNumber?.S);
+                setValue('email', managerData.email?.S);
                 // setValue('title', managerData.title);
             } catch (err) {
                 console.error('Error fetching manager:', err);
@@ -69,6 +76,7 @@ export default function EditManager() {
             const response = await axios.put(`http://localhost:3000/managers/${id}/edit`, {
                 firstName: data.firstName,
                 lastName: data.lastName,
+                email: data.email,
                 phoneNumber: data.phoneNumber
                 // title: data.title
             }, {
@@ -114,6 +122,18 @@ export default function EditManager() {
                         placeholder="e.g., Smith"
                     />
                     {errors.lastName && <p className='error-message'>{errors.lastName.message}</p>}
+                </div>
+                <div>
+                    <label>Email:</label>
+                    <input
+                        type="text"
+                        {...register('email', {
+                            required: 'Email is required.',
+                            validate: validateEmail,
+                        })}
+                        placeholder="e.g., johnsmith@gmail.com"
+                    />
+                    {errors.email && <p className='error-message'>{errors.email.message}</p>}
                 </div>
                 <div>
                     <label>Phone Number:</label>
