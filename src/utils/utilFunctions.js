@@ -21,7 +21,7 @@ export const logDeliveryAction = async (id, action, manager) => {
     } catch (err) {
         console.error('Error logging delivery action:', err.response?.data || err.message);
     }
-};
+}; // no reason
 
 export const fetchDeliveryHistory = async (deliveryId) => {
     try {
