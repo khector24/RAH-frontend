@@ -20,7 +20,7 @@ export default function Managers() {
                     throw new Error('Token not found');
                 }
 
-                const response = await axios.get('http://localhost:3000/managers', {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/managers`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
@@ -42,7 +42,7 @@ export default function Managers() {
         if (confirmDelete) {
             try {
                 const token = localStorage.getItem('token');
-                await axios.delete(`http://localhost:3000/managers/${id}`, {
+                await axios.delete(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/managers/${id}`, {
                     headers: {
                         'Authorization': `${token}`,
                     },

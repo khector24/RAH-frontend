@@ -22,7 +22,7 @@ const Deliveries = () => {
                 throw new Error('Token not found');
             }
 
-            const deliveryResponse = await axios.get('http://localhost:3000/deliveries', {
+            const deliveryResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries`, {
                 headers: getAuthHeaders(),
             });
             setDeliveries(deliveryResponse.data);
@@ -38,7 +38,7 @@ const Deliveries = () => {
     //             throw new Error('Token not found');
     //         }
 
-    //         const deliveryHistoryResponse = await axios.get(`http://localhost:3000/deliveries/${id}/history`, {
+    //         const deliveryHistoryResponse = await axios.get(`h${process.env.REACT_APP_BACKEND_URL}/deliveries/${id}/history`, {
     //             headers: {
     //                 'Authorization': `${token}`,
     //             },
@@ -52,7 +52,7 @@ const Deliveries = () => {
     useEffect(() => {
         const fetchDrivers = async () => {
             try {
-                const driverResponse = await axios.get('http://localhost:3000/drivers', {
+                const driverResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers`, {
                     headers: getAuthHeaders(),
                 });
                 setDrivers(driverResponse.data);
@@ -82,7 +82,7 @@ const Deliveries = () => {
                 const deletionDate = getOneWeekFromNow();
                 const username = localStorage.getItem('username'); // Get username directly here
 
-                await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+                await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`, {
                     markedForDeletion: true,
                     deletionDate: deletionDate,
                 }, {
@@ -109,7 +109,7 @@ const Deliveries = () => {
             const token = localStorage.getItem('token');
             const username = localStorage.getItem('username'); // Get username directly here
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`, {
                 markedForReview: true,
             }, {
                 headers: {
@@ -135,7 +135,7 @@ const Deliveries = () => {
         try {
             const username = localStorage.getItem('username');
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`, {
                 outForDelivery: true,
                 driver: driverName,
             }, {
@@ -161,7 +161,7 @@ const Deliveries = () => {
             const username = localStorage.getItem('username'); // Get username directly here
             const deletionDate = getOneWeekFromNow();
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`, {
                 markedCompleted: true,
                 driver: driverName,
                 deletionDate: deletionDate,

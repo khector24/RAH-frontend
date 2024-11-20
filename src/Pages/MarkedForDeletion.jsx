@@ -13,7 +13,7 @@ const MarkedForDeletion = () => {
 
     const fetchDeliveryHistory = async (deliveryId) => {
         try {
-            const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
+            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${deliveryId}/history`, {
                 headers: getAuthHeaders(),
             });
 
@@ -73,7 +73,7 @@ const MarkedForDeletion = () => {
         const fetchMarkedDeliveries = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:3000/deliveries', {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
@@ -102,7 +102,7 @@ const MarkedForDeletion = () => {
             try {
                 const username = localStorage.getItem('username');
 
-                await axios.delete(`http://localhost:3000/deliveries/${id}`, {
+                await axios.delete(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}`, {
                     headers: getAuthHeaders(),
                 });
 
@@ -127,7 +127,7 @@ const MarkedForDeletion = () => {
         try {
             const username = localStorage.getItem('username');
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`,
                 {
                     markedForDeletion: false,
                     deletionDate: " ",

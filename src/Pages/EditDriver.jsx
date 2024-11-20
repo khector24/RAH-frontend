@@ -31,7 +31,7 @@ export default function EditDriver() {
                     throw new Error('Token not found');
                 }
 
-                const response = await axios.get(`http://localhost:3000/drivers/${id}`, {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers/${id}`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
@@ -59,7 +59,7 @@ export default function EditDriver() {
                 throw new Error('Token not found');
             }
 
-            const response = await axios.put(`http://localhost:3000/drivers/${id}/edit`, {
+            const response = await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers/${id}/edit`, {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 phoneNumber: data.phoneNumber

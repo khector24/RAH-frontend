@@ -35,7 +35,7 @@ export default function NewDriver() {
                 throw new Error('Token not found');
             }
 
-            const response = await axios.post('http://localhost:3000/drivers', {
+            const response = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers`, {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 phoneNumber: data.phoneNumber

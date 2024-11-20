@@ -10,14 +10,20 @@ export default function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const appURL = import.meta.env.VITE_REACT_APP_BACKEND_URL;
+
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevent the default form submission
 
+
         try {
-            const response = await axios.post('http://localhost:3000/managers/login', {
+            const response = await axios.post(`${appURL}/managers/login`, {
                 username,
                 password,
             });
+
+            console.log('Backend URL:', appURL);
+
 
             const token = response.data.token;
             localStorage.setItem('token', token);

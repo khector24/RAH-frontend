@@ -19,7 +19,7 @@ const OutForDelivery = () => {
 
     const fetchDeliveryHistory = async (deliveryId) => {
         try {
-            const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
+            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${deliveryId}/history`, {
                 headers: getAuthHeaders(),
             });
 
@@ -78,7 +78,7 @@ const OutForDelivery = () => {
     useEffect(() => {
         const fetchOutDeliveries = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/deliveries', {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries`, {
                     headers: getAuthHeaders(),
                 });
 
@@ -102,7 +102,7 @@ const OutForDelivery = () => {
             const username = localStorage.getItem('username');
             const deletionDate = getOneWeekFromNow();
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`,
                 {
                     markedCompleted: true,
                     deletionDate: deletionDate,
@@ -132,7 +132,7 @@ const OutForDelivery = () => {
         try {
             const username = localStorage.getItem('username');
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`,
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`,
                 {
                     outForDelivery: false,
                 },

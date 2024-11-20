@@ -32,7 +32,7 @@ export default function EditDelivery() {
                     throw new Error('Token not found');
                 }
 
-                const response = await axios.get(`http://localhost:3000/deliveries/${id}`, {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}`, {
                     headers: getAuthHeaders(),
                 });
                 const deliveryData = response.data;
@@ -58,7 +58,7 @@ export default function EditDelivery() {
         const fetchDrivers = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const driverResponse = await axios.get('http://localhost:3000/drivers', {
+                const driverResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
@@ -83,7 +83,7 @@ export default function EditDelivery() {
 
             const username = localStorage.getItem('username');
 
-            await axios.put(`http://localhost:3000/deliveries/${id}/edit`, {
+            await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`, {
                 customerName: data.customerName,
                 customerPhoneNumber: data.customerPhoneNumber,
                 customerEmail: data.customerEmail,

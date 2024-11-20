@@ -22,7 +22,7 @@ const Delivery = ({ delivery, drivers, onDelete, onEdit, onFlagReview, onOutForD
         if (!isHistoryVisible) {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:3000/deliveries/${delivery.id.S}/history`, {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${delivery.id.S}/history`, {
                     headers: {
                         'Authorization': `${token}`,
                     },

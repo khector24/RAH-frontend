@@ -47,7 +47,7 @@ export default function NewDelivery() {
                 }
 
                 const response = await axios.post(
-                    'http://localhost:3000/deliveries',
+                    `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries`,
                     {
                         ...data,
                         managerId, // Include manager ID

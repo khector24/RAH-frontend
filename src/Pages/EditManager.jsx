@@ -43,7 +43,7 @@ export default function EditManager() {
                     throw new Error('Token not found');
                 }
 
-                const response = await axios.get(`http://localhost:3000/managers/${id}`, {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/managers/${id}`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
@@ -73,7 +73,7 @@ export default function EditManager() {
                 throw new Error('Token not found');
             }
 
-            const response = await axios.put(`http://localhost:3000/managers/${id}/edit`, {
+            const response = await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/managers/${id}/edit`, {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,

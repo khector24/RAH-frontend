@@ -8,7 +8,7 @@ export const logDeliveryAction = async (id, action, manager) => {
 
         console.log('Logging delivery action with ID:', id, 'and action:', action);
 
-        await axios.post('http://localhost:3000/deliveries/history', {
+        await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/history`, {
             deliveryId: id,
             action,
             timestamp: new Date().toISOString(),
@@ -26,7 +26,7 @@ export const logDeliveryAction = async (id, action, manager) => {
 export const fetchDeliveryHistory = async (deliveryId) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:3000/deliveries/${deliveryId}/history`, {
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${deliveryId}/history`, {
             headers: {
                 'Authorization': `${token}`,
             },

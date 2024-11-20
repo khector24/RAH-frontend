@@ -21,7 +21,7 @@ export default function Drivers() {
                     throw new Error('Token not found');
                 }
 
-                const response = await axios.get('http://localhost:3000/drivers', {
+                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
@@ -43,7 +43,7 @@ export default function Drivers() {
         if (confirmDelete) {
             try {
                 const token = localStorage.getItem('token');
-                await axios.delete(`http://localhost:3000/drivers/${id}`, {
+                await axios.delete(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/drivers/${id}`, {
                     headers: {
                         'Authorization': `${token}`,
                     },
