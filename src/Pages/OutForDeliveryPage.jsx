@@ -105,6 +105,7 @@ const OutForDelivery = () => {
             await axios.put(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/deliveries/${id}/edit`,
                 {
                     markedCompleted: true,
+                    outForDelivery: false,
                     deletionDate: deletionDate,
                 },
                 {
@@ -113,7 +114,7 @@ const OutForDelivery = () => {
             );
 
             if (username) {
-                await logDeliveryAction(id, "restored", username);
+                await logDeliveryAction(id, "marked completed", username);
             } else {
                 console.error('Username not found. Cannot log action.');
             }
@@ -172,66 +173,71 @@ const OutForDelivery = () => {
     return (
         <div>
             <h2>Out for Delivery</h2>
-            {outDeliveries.map((delivery) => (
-                <div className='delivery' key={delivery.id.S}>
-                    <div className='delivery-heading'>
-                        <h3>Customer: {delivery.customerName?.S || 'N/A'}</h3>
-                        <div className='heading-buttons'>
-                            <EditIcon
-                                titleAccess="Edit Delivery"
-                                onClick={() => handleEdit(delivery.id.S)}
-                            />
-                        </div>
-                    </div>
-                    <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
-                    <p>Email: {delivery.customerEmail?.S || 'N/A'}</p>
-                    <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>
-                    <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
-                    <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
-                    <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
-                    <p>Driver: {delivery.driver?.S || 'N/A'}</p>
-                    <button onClick={() => toggleHistoryVisibility(delivery.id.S)}>
-                        {deliveryHistories[delivery.id.S]?.isVisible ? 'Hide Delivery History' : 'Show Delivery History'}
-                    </button>
-                    <div>
-                        {deliveryHistories[delivery.id.S]?.isVisible && (
-                            <div className='delivery-history'>
-                                {deliveryHistories[delivery.id.S]?.error ? (
-                                    <p className='no-delivery-message'>{deliveryHistories[delivery.id.S].error}</p>
-                                ) : (
-                                    deliveryHistories[delivery.id.S]?.history.map((historyItem, index) => {
-                                        const action = historyItem.action.S;
-                                        const manager = historyItem.manager.S;
-                                        const timestamp = historyItem.timestamp.S;
-                                        const actionColor = getActionColor(action.toLowerCase());
 
-                                        return (
-                                            <div className='history-item' key={index} style={{ backgroundColor: actionColor }}>
-                                                <div className='item'>
-                                                    Action: {action}
-                                                </div>
-                                                <div className='item'>
-                                                    Manager: {manager}
-                                                </div>
-                                                <div className='item'>
-                                                    Time: {formatTimestamp(timestamp)}
-                                                </div>
-                                            </div>
-                                        );
-                                    })
-                                )}
+            {outDeliveries.length === 0 ? (
+                <p>No deliveries are currently out for delivery.</p>
+            ) : (
+                outDeliveries.map((delivery) => (
+                    <div className='delivery' key={delivery.id.S}>
+                        <div className='delivery-heading'>
+                            <h3>Customer: {delivery.customerName?.S || 'N/A'}</h3>
+                            <div className='heading-buttons'>
+                                <EditIcon
+                                    titleAccess="Edit Delivery"
+                                    onClick={() => handleEdit(delivery.id.S)}
+                                />
                             </div>
-                        )}
-                    </div>
+                        </div>
+                        <p>Phone: {delivery.customerPhoneNumber?.S || 'N/A'}</p>
+                        <p>Email: {delivery.customerEmail?.S || 'N/A'}</p>
+                        <p>Address: {delivery.customerAddress?.S || 'N/A'}</p>
+                        <p>Date: {delivery.deliveryDate?.S || 'N/A'}</p>
+                        <p>Time Range: {delivery.timeRange?.S || 'N/A'}</p>
+                        <p>Delivery Notes: {delivery.deliveryNotes?.S || 'N/A'}</p>
+                        <p>Driver: {delivery.driver?.S || 'N/A'}</p>
+                        <button onClick={() => toggleHistoryVisibility(delivery.id.S)}>
+                            {deliveryHistories[delivery.id.S]?.isVisible ? 'Hide Delivery History' : 'Show Delivery History'}
+                        </button>
+                        <div>
+                            {deliveryHistories[delivery.id.S]?.isVisible && (
+                                <div className='delivery-history'>
+                                    {deliveryHistories[delivery.id.S]?.error ? (
+                                        <p className='no-delivery-message'>{deliveryHistories[delivery.id.S].error}</p>
+                                    ) : (
+                                        deliveryHistories[delivery.id.S]?.history.map((historyItem, index) => {
+                                            const action = historyItem.action.S;
+                                            const manager = historyItem.manager.S;
+                                            const timestamp = historyItem.timestamp.S;
+                                            const actionColor = getActionColor(action.toLowerCase());
 
-                    <button onClick={() => handleComplete(delivery.id.S)}>
-                        Mark as Completed
-                    </button>
-                    <button onClick={() => handleRestore(delivery.id.S)}>
-                        Restore
-                    </button>
-                </div>
-            ))}
+                                            return (
+                                                <div className='history-item' key={index} style={{ backgroundColor: actionColor }}>
+                                                    <div className='item'>
+                                                        Action: {action}
+                                                    </div>
+                                                    <div className='item'>
+                                                        Manager: {manager}
+                                                    </div>
+                                                    <div className='item'>
+                                                        Time: {formatTimestamp(timestamp)}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        <button onClick={() => handleComplete(delivery.id.S)}>
+                            Mark as Completed
+                        </button>
+                        <button onClick={() => handleRestore(delivery.id.S)}>
+                            Restore
+                        </button>
+                    </div>
+                ))
+            )}
         </div>
     );
 };
